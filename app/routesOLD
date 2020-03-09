@@ -1,0 +1,48 @@
+import os
+import flask as fl
+from app import app
+
+dic={}
+
+@app.route('/')
+@app.route('/logs', methods=["GET"])
+def index():
+    beer = fl.request.args.get('TempBeer')
+    fridge = fl.request.args.get('TempFridge')
+    beerset = fl.request.args.get('BeerSet')
+    fridgeset = fl.request.args.get('FridgeSet')
+    temproom = fl.request.args.get('TempRoom')
+    tempaux = fl.request.args.get('TempAux')
+    externalvolt = fl.request.args.get('ExternalVolt')
+    tempmode = fl.request.args.get('TempMode')
+    modeinint = fl.request.args.get('ModeInInt')
+    state = fl.request.args.get('State')    
+    print("Temperatura da Breja: {}".format(beer))
+    print("Temperatura do Fridge: {}".format(fridge))
+    print("Config da Breja: {}".format(beerset))
+    print("Config do Fridge: {}".format(fridgeset))
+    print("Temperatura Ambiente: {}".format(temproom))
+    print("Temperatura Auxiliar: {}".format(tempaux))
+    print("Voltagem do Spindle: {}".format(externalvolt))
+    print("Escala de Temperatura: {}".format(tempmode))
+    print("Escala em Inteiro: {}".format(modeinint))
+    print("Estado do controlador: {}".format(state))
+    gravaArq()
+
+    return 
+    
+def gravaArq():
+    path = 'C:/Users/bruno/Desktop/api/app/output/temp.txt'
+    beer = fl.request.args.get('TempBeer')
+    fridge = fl.request.args.get('TempFridge')
+    beerset = fl.request.args.get('BeerSet')
+    fridgeset = fl.request.args.get('FridgeSet') 
+    tempmode = fl.request.args.get('TempMode')
+    modeinint = fl.request.args.get('ModeInInt')
+    state = fl.request.args.get('State')    
+    
+    with open(path,'a') as arquivo:
+        arquivo.write(beer+fridge+'\n')
+    return "Gravando em arquivo"
+
+
