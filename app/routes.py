@@ -5,6 +5,12 @@ import datetime
 from app import app
 import subprocess
 import pymongo
+from flask_minify import minify
+from htmlmin.minify import html_minify
+
+ 
+ 
+
 
 class BrewPiLess():
     def __init__(self, beertemp, fridgetemp, beerset, fridgeset, temproom, tempaux, externalvolt, tempmode, modeinint):
@@ -33,7 +39,7 @@ class BrewPiLess():
         
         
     def GravaArq(self):
-        beername = 'bruno' #replace for input
+        beername = 'beertest' #replace for input
         created = time.strftime("%d/%m/%Y, %H:%M:%S")       
         filename = beername+'.csv'
         with open(self.path+'/'+filename, 'a+') as arquivo:
@@ -45,7 +51,7 @@ class BrewPiLess():
         Enviando para HDFS
         """
         #testando se o arquivo existe
-        hdfspath = '/datasets/'
+        hdfspath = '/datasets/brewpiless/'
         self.arquivo = hdfspath+arquivo
         verarq = ['hdfs', 'dfs', '-test', '-e', self.arquivo]
         ret, out, err = self.run_cmd(verarq)
@@ -87,16 +93,15 @@ def index():
     print("Escala em Inteiro: {}".format(modeinint)) 
 
     dataobj = BrewPiLess(beertemp, fridgetemp, beerset, fridgeset, temproom, tempaux, externalvolt, tempmode, modeinint)
-    arquivo = dataobj.GravaArq()
-    dataobj.ToHDFS(arquivo)
+    #arquivo = dataobj.GravaArq()
+    #dataobj.ToHDFS(arquivo)
     
     return "collecting from brewpiless"
 
 @app.route('/mainpage') # Main Page
-def mainpage():    
-    return fl.render_template('index.html')
-    
-    
+def mainpage():     
+    return fl.render_template('index.html') 
+
 @app.route('/beerrecord', methods=["GET"]) # Cadastro
    
 def cadastro():
@@ -142,7 +147,7 @@ def salvadb():
 @app.route('/beersearch', methods=["GET"]) # Beer Search
 def beersearch():
     beername = fl.request.form.get('brejaname') 
-    beerstyle = fl.request.form.get('beerstyle')     
+    beerstyle = fl.request.form.get('brejastyle')     
     return fl.render_template('BrejaSearch.html', beername=beername, beerstyle=beerstyle) 
                 
 @app.route('/beerfind', methods=["GET","POST"]) # Beer Search
@@ -151,13 +156,13 @@ def beerfind():
     db = conn.brewpiless
     collection = db.beer    
     beername = fl.request.form.get('brejaname') 
-    beerstyle = fl.request.form.get('beerstyle')   
-    if beername == '' and brejastyle == '':
+    beerstyle = fl.request.form.get('brejastyle')   
+    if beername == '' and beerstyle == '':
         ret = 'Please, type at least one field'
     elif beername != '':
         found = collection.find_one({"brejaname": beername}) 
     elif beerstyle != '':
-        found = collection.find_one({"beerstyle": beerstyle})         
+        found = collection.find_one({"type": beerstyle})         
     else:
         msg = 'Beer not found'
     conn.close()

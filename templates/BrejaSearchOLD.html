@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+<br>
+<br>
+{% block cadastro %}
+	Beer Search
+
+	<div>
+		<form action = "/beerfind" method="post">
+			Beer's Name
+			<input type="text" name="brejaname">
+			<br>
+			Beer's Style
+			<input type="text" name="brejastyle">
+			<br>
+			<button type="submit" class="btn btn-info">Search</button>
+		</form>
+	</div>
+	{%if found is not none%}
+		{{found}}
+	{%endif%}
+	{%if msg is not none%}
+		{{msg}}
+	{%endif%}
+{% endblock %}
+

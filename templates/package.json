@@ -1,0 +1,25 @@
+{
+  "name": "material-dashboard",
+  "version": "2.1.2",
+  "description": "Material Dasboard, a Google Material Desgin. ",
+  "main": "index.html",
+  "directories": {
+    "example": "root"
+  },
+  "scripts": {
+    "open-app": "gulp open-app",
+    "start": "npm run open-app",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "gulp watch"
+  },
+  
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^6.1.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-install": "^1.1.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-open": "^3.0.1"
+  }
+}

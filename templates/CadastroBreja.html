@@ -1,22 +1,57 @@
-
-{% extends "base.html" %}
+ {% extends "base.html" %}
 
 <br>
 <br>
 {% block cadastro %}
 	Cadastro de cerveja
+	   <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">Create / Edit beers</h4>
+                  <p class="card-category">Complete o formulario abaixo</p>
+                </div>
+                <div class="card-body">
+                  <form  action = "/brewcadastro" method="post">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Beer name</label>
+                          <input type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Beer Style</label>
+                          <input type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
 
-	<div>
-		<form action = "/brewcadastro" method="post">
-			Nome da breja:
-			<input type="text" name="brejaname">
-			<br>
-			Estilo da breja:
-			<input type="text" name="brejastyle">
-			<br>
-			<button type="submit" class="btn btn-info">Save</button>
-		</form>
-	</div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <div class="form-group">
+                            <label class="bmd-label-floating"> Description</label>
+                            <textarea class="form-control" rows="5"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary pull-right">Create/update</button>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+		</div>
+      </div>
+          <!-- end form -->
 {{ret}}
 {{post_id}}
-{% endblock %}
+{% endblock %}		  

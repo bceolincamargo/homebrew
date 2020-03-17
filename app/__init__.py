@@ -1,6 +1,8 @@
-from flask import Flask
+from flask import Flask 
+#from flask_minify import minify
 
-app = Flask(__name__)
 
+app = Flask(__name__, template_folder='../templates',static_url_path='', static_folder='../static',)
+ 
 from app import routes
-
+  
