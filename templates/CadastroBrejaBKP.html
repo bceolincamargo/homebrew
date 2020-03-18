@@ -1,0 +1,57 @@
+ {% extends "base.html" %}
+
+<br>
+<br>
+{% block cadastro %}
+	Beer Catalog
+	   <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">Create / Edit beers</h4>
+                  <p class="card-category">Fill the form</p>
+                </div>
+                <div class="card-body">
+                  <form  action = "/beerrecord" method="post">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Beer name</label>
+                          <input type="text" name="beername" class="form-control" value={{form.beername.label}}{{form.beername}}>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Beer Style</label>
+                          <input type="text"  name="beerstyle" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <div class="form-group">
+                            <label class="bmd-label-floating"> Description</label>
+                            <input type="text" name="description" class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+		</div>
+      </div>
+          <!-- end form -->
+{{ret}}
+{{post_id}}
+{% endblock %}		  

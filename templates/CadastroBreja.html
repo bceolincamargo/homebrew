@@ -3,7 +3,7 @@
 <br>
 <br>
 {% block cadastro %}
-	Cadastro de cerveja
+	Beer Catalog
 	   <div class="content">
         <div class="container-fluid">
           <div class="row">
@@ -11,39 +11,14 @@
               <div class="card">
                 <div class="card-header card-header-primary">
                   <h4 class="card-title">Create / Edit beers</h4>
-                  <p class="card-category">Complete o formulario abaixo</p>
+                  <p class="card-category">Fill the form</p>
                 </div>
                 <div class="card-body">
-                  <form  action = "/brewcadastro" method="post">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Beer name</label>
-                          <input type="text" class="form-control">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Beer Style</label>
-                          <input type="text" class="form-control">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <div class="form-group">
-                            <label class="bmd-label-floating"> Description</label>
-                            <textarea class="form-control" rows="5"></textarea>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary pull-right">Create/update</button>
-                    <div class="clearfix"></div>
+                  <form  action = "/beerrecord" method="post">
+                  <div class="form-field">{{ form.beername.label }} {{ form.beername }}</div>
+				  <div class="form-field">{{ form.beerstyle.label }} {{ form.beerstyle }}</div>
+				  <div class="form-field">{{ form.description.label }} {{ form.description }}</div>
+				  {{ form.submit }}
                   </form>
                 </div>
               </div>
@@ -51,7 +26,6 @@
           </div>
 		</div>
       </div>
-          <!-- end form -->
-{{ret}}
-{{post_id}}
+          <!-- end form --> 
+{{form}}
 {% endblock %}		  

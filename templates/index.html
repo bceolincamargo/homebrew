@@ -1,1 +1,51 @@
 {%extends "base.html"%}
+
+{% block cadastro %}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Brewing now</h4>
+                  <p class="card-category"> Subheading here </p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class=" text-primary">
+                        <th>Column 1</th>
+                        <th>Column 2</th>
+                        <th>Column 3</th>
+                        <th>Column 4</th>
+                        <th>Column 5</th>
+
+                      </thead>
+                      <tbody>
+                        <!-- loop aqui pra  -->
+                        <tr>
+                          <td>
+                            1
+                          </td>
+                          <td>
+                            Lorem ipsum
+                          </td>
+                          <td>
+                            lorem
+                          </td>
+                          <td>
+                            ipsum
+                          </td>
+                          <td class="text-primary">
+                            text color
+                          </td>
+                        </tr>
+                        <!-- end loop aqui -->
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+{% endblock %}		  

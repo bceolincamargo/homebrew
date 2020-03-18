@@ -7,9 +7,9 @@ import subprocess
 import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
+from forms import CreateEditBeer
+ 
 
- 
- 
 
 
 class BrewPiLess():
@@ -102,47 +102,44 @@ def index():
 def mainpage():     
     return fl.render_template('index.html') 
 
-@app.route('/beerrecord', methods=["GET"]) # Cadastro
+#@app.route('/beerrecord', methods=["GET"]) # Cadastro
    
-def cadastro():
-    brejaname = None
-    brejastyle = None    
+#def cadastro():
+#    beername = None
+#    beername = None   
+#
+#   beername = fl.request.args.get('beername')
+#    beerstyle = fl.request.args.get('beerstyle')
+#
+#    if beerstyle and brejastyle:  
+#        beername = str(beername)
+#        beerstyle = str(beerstyle)
+#
+#    return fl.render_template('CadastroBreja.html', beername=beername,    
+#                                         beerstyle=beerstyle)
 
-    brejaname = fl.request.args.get('brejaname')
-    brejastyle = fl.request.args.get('brejastyle')
 
-    if brejaname and brejastyle:  
-        brejaname = str(brejaname)
-        brejastyle = str(brejastyle)
+@app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro
 
-    return fl.render_template('CadastroBreja.html', brejaname=brejaname,    
-                                         brejastyle=brejastyle)
-
-
-@app.route('/salvadb', methods=["GET","POST"]) # Beer Cadastro
-
-def salvadb():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+def beerrecord():
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer
+      
+    form = CreateEditBeer()
+    if form.validate_on_submit():               
+        beername = form.beername.data
+        beerstyle = form.beerstyle.data
+        description =  form.description.data       
+        created = datetime.datetime.utcnow()
         
-    brejaname = fl.request.form.get('brejaname')    
-    brejastyle = fl.request.form.get('brejastyle')
-    if brejaname == '':
-        ret = 'Please, type a Beer Name'
-    elif brejastyle == '':
-        ret = 'Please, type a Beer Style'
-    else:    
-        verbeer = collection.find_one({"brejaname": brejaname})
-        if verbeer:        
-            ret = 'There is already a beer called '+str(brejaname)+' in the database. Please type a different beer name'
-        else:
-            record = {"brejaname": brejaname,"type": brejastyle,"created": datetime.datetime.utcnow()}
-            inserted  = collection.insert_one(record)
-            ret = 'Beer '+str(brejaname)+' saved'
-    conn.close()   
-    
-    return fl.render_template('CadastroBreja.html', ret=ret) 
+        verbeer = collection.find_one({"beername": beername})
+        values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created}
+        beerinserted = collection.insert_one(values)            
+        conn.close()    
+    return fl.render_template('CadastroBreja.html', form=form)     
+   
+  
 
 @app.route('/beersearch', methods=["GET"]) # Beer Search
 def beersearch():
