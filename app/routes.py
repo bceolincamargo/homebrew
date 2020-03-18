@@ -1,5 +1,4 @@
 import os
-import flask as fl
 import time
 import datetime
 from app import app
@@ -7,8 +6,8 @@ import subprocess
 import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
-from forms import CreateEditBeer
- 
+from forms import CreateEditBeer, SearchBeer
+from flask import Flask, flash, redirect, render_template, request, url_for
 
 
 
@@ -73,15 +72,15 @@ class BrewPiLess():
 @app.route('/logs', methods=["GET"])
 
 def index():
-    beertemp = fl.request.args.get('TempBeer')
-    fridgetemp = fl.request.args.get('TempFridge')
-    beerset = fl.request.args.get('BeerSet')
-    fridgeset = fl.request.args.get('FridgeSet')
-    temproom = fl.request.args.get('TempRoom')
-    tempaux = fl.request.args.get('TempAux')
-    externalvolt = fl.request.args.get('ExternalVolt')
-    tempmode = fl.request.args.get('TempMode')
-    modeinint = fl.request.args.get('ModeInInt') 
+    beertemp = request.args.get('TempBeer')
+    fridgetemp = request.args.get('TempFridge')
+    beerset = request.args.get('BeerSet')
+    fridgeset = request.args.get('FridgeSet')
+    temproom = request.args.get('TempRoom')
+    tempaux = request.args.get('TempAux')
+    externalvolt = request.args.get('ExternalVolt')
+    tempmode = request.args.get('TempMode')
+    modeinint = request.args.get('ModeInInt') 
     print("Temperatura da Breja: {}".format(beertemp))
     print("Temperatura do Fridge: {}".format(fridgetemp))
     print("Config da Breja: {}".format(beerset))
@@ -100,82 +99,64 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    return fl.render_template('index.html') 
-
-#@app.route('/beerrecord', methods=["GET"]) # Cadastro
-   
-#def cadastro():
-#    beername = None
-#    beername = None   
-#
-#   beername = fl.request.args.get('beername')
-#    beerstyle = fl.request.args.get('beerstyle')
-#
-#    if beerstyle and brejastyle:  
-#        beername = str(beername)
-#        beerstyle = str(beerstyle)
-#
-#    return fl.render_template('CadastroBreja.html', beername=beername,    
-#                                         beerstyle=beerstyle)
+    return render_template('index.html') 
 
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
     conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
-    collection = db.beer      
-    print("oiiii")
-    form = CreateEditBeer()    
-    print(form.errors)
+    collection = db.beer    
+    
+    form = CreateEditBeer()     
     beername = form.beername.data
     beerstyle = form.beerstyle.data
     description =  form.description.data       
     created = datetime.datetime.utcnow()
-    print("tchau")
-    print(form)
-    print(form.errors)    
-    print(description)
-    if form.validate_on_submit():      
-        flash("Successfully created a new book")         
-        print(form.errors)
-    if form.is_submitted():
-        print(form.errors)
-        print "submitted"
+    finished = form.finished.data       
+    values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created, "finished":''}
     if form.validate():
-        print "valid"
-    if form.validate_on_submit():
-        flash("Successfully created a new book")     
-        print(description)
-        #verbeer = collection.find_one({"beername": beername})
-        #values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created}
-        #beerinserted = collection.insert_one(values)            
+        verbeer = collection.find_one({"beername": beername})
+        if verbeer:
+            flash("Ja exist")
+            mycollection.update_one({"beername": beername}, {"beerstyle":beerstyle}, {"finished":''}, upsert=False)
+            flash("updated ?")
+        else:
+            beerinserted = collection.insert_one(values)            
+            flash("New beer included!")
         conn.close()  
-    return fl.render_template('CadastroBreja.html, form=form') 
+    return render_template('CadastroBreja.html', form=form)
    
   
 
 @app.route('/beersearch', methods=["GET"]) # Beer Search
-def beersearch():
-    beername = fl.request.form.get('brejaname') 
-    beerstyle = fl.request.form.get('brejastyle')     
-    return fl.render_template('BrejaSearch.html', beername=beername, beerstyle=beerstyle) 
+def beersearch():        
+    return render_template('BrejaSearch.html') 
+                
                 
 @app.route('/beerfind', methods=["GET","POST"]) # Beer Search
 def beerfind():
     conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
-    beername = fl.request.form.get('brejaname') 
-    beerstyle = fl.request.form.get('brejastyle')   
-    if beername == '' and beerstyle == '':
-        ret = 'Please, type at least one field'
-    elif beername != '':
-        found = collection.find_one({"brejaname": beername}) 
-    elif beerstyle != '':
-        found = collection.find_one({"type": beerstyle})         
-    else:
-        msg = 'Beer not found'
+    
+    form = SearchBeer()     
+    beername = form.beername.data
+    beerstyle = form.beerstyle.data
+    ret = ''
+    if form.validate():     
+        if beername == '' and beerstyle == '':
+           #busca tudo  
+           ret = db.collection.find()
+        elif beername != '':
+           #busca NAME
+           ret = db.collection.find_one(beername)
+        else:
+        #busca Style
+           ret = db.collection.find_one(beerstyle)
+         
+            
     conn.close()
-    return fl.render_template('BrejaSearch.html', found=found) 
+    return render_template('SearchResult.html', pages=ret) 
                                 
                 

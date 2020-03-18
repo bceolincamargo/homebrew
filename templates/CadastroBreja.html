@@ -18,7 +18,19 @@
                   <div class="form-field">{{ form.beername.label }} {{ form.beername }}</div>
 				  <div class="form-field">{{ form.beerstyle.label }} {{ form.beerstyle }}</div>
 				  <div class="form-field">{{ form.description.label }} {{ form.description }}</div>
-				  {{ form.submit }}
+				  <div class="form-field">{{ form.created.label }} {{ form.created }}</div>				  
+				  <div class="form-field">{{ form.finished.label }} {{ form.finished }}</div>				  				  
+				  {{ form.submit }} 
+				  {% with messages = get_flashed_messages() %}
+					{% if messages %}
+					<ul class=flashes>
+					{% for message in messages %}
+					<li>{{ message }}</li>
+					{% endfor %}
+					</ul>
+				  {% endif %}
+				{% endwith %}
+				 
                   </form>
                 </div>
               </div>

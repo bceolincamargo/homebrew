@@ -5,4 +5,12 @@ class CreateEditBeer(FlaskForm):
     beername = StringField('beername', [validators.DataRequired(message='Name is required')])
     beerstyle = StringField('beerstyle', [validators.DataRequired(message='Style is required')])
     description = StringField('description', [validators.DataRequired(message='Description is required')])  
-    submit = SubmitField('Submit')
+    created = StringField('created')  
+    finished = StringField('finished')      
+    submit = SubmitField('Save')
+
+
+class SearchBeer(FlaskForm):
+    beername = StringField('beername', [validators.DataRequired(message='Name is required')])
+    beerstyle = StringField('beerstyle', [validators.DataRequired(message='Style is required')])
+    Search = SubmitField('Search')    

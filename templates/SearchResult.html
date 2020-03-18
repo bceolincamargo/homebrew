@@ -1,0 +1,36 @@
+
+{% extends "BrejaSearch.html" %}
+
+{% block cadastro %}
+<div class="table-responsive">
+                    <table class="table">
+                      <thead class=" text-primary">
+                        <th>Name</th>
+                        <th>Style</th>
+                        <th>Description</th>						
+                        <th>Started</th>
+                        <th>Finished</th>
+                      </thead>
+                      <tbody>
+                        <!-- loop aqui pra  -->
+                        <tr>
+						{% for page in pages %}
+                          <td>
+                           {{ page }}
+                          </td>                          
+                          <td class="text-primary">
+                            text color
+                          </td>
+						  <td class="text-right">
+							<div class="row">
+								<a class="btn btn-primary pull-right" href="/beerrecord">Edit</a>
+									</div>
+								</td>
+						{% endfor %}
+                        </tr>
+                        <!-- end loop aqui -->
+
+                      </tbody>
+                    </table>
+                  </div>
+{% endblock %}				  
