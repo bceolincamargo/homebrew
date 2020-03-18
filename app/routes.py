@@ -119,25 +119,38 @@ def mainpage():
 #                                         beerstyle=beerstyle)
 
 
-@app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro
-
+@app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
-    collection = db.beer
-      
-    form = CreateEditBeer()
-    if form.validate_on_submit():               
-        beername = form.beername.data
-        beerstyle = form.beerstyle.data
-        description =  form.description.data       
-        created = datetime.datetime.utcnow()
-        
-        verbeer = collection.find_one({"beername": beername})
-        values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created}
-        beerinserted = collection.insert_one(values)            
-        conn.close()    
-    return fl.render_template('CadastroBreja.html', form=form)     
+    collection = db.beer      
+    print("oiiii")
+    form = CreateEditBeer()    
+    print(form.errors)
+    beername = form.beername.data
+    beerstyle = form.beerstyle.data
+    description =  form.description.data       
+    created = datetime.datetime.utcnow()
+    print("tchau")
+    print(form)
+    print(form.errors)    
+    print(description)
+    if form.validate_on_submit():      
+        flash("Successfully created a new book")         
+        print(form.errors)
+    if form.is_submitted():
+        print(form.errors)
+        print "submitted"
+    if form.validate():
+        print "valid"
+    if form.validate_on_submit():
+        flash("Successfully created a new book")     
+        print(description)
+        #verbeer = collection.find_one({"beername": beername})
+        #values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created}
+        #beerinserted = collection.insert_one(values)            
+        conn.close()  
+    return fl.render_template('CadastroBreja.html, form=form') 
    
   
 
