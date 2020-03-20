@@ -1,0 +1,5 @@
+Flask
+Flask-WTF
+Flask-Minify
+pymongo
+django-htmlmin

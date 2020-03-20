@@ -104,7 +104,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -119,7 +119,7 @@ def beerrecord():
         verbeer = collection.find_one({"beername": beername})
         if verbeer:
             flash("Ja exist")
-            mycollection.update_one({"beername": beername}, {"beerstyle":beerstyle}, {"finished":''}, upsert=False)
+            collection.update_one({"beername": beername}, {"beerstyle":beerstyle}, {"finished":''}, upsert=False)
             flash("updated ?")
         else:
             beerinserted = collection.insert_one(values)            
@@ -129,14 +129,9 @@ def beerrecord():
    
   
 
-@app.route('/beersearch', methods=["GET"]) # Beer Search
-def beersearch():        
-    return render_template('BrejaSearch.html') 
-                
-                
-@app.route('/beerfind', methods=["GET","POST"]) # Beer Search
-def beerfind():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+@app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
+def beersearch():
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -144,19 +139,30 @@ def beerfind():
     beername = form.beername.data
     beerstyle = form.beerstyle.data
     ret = ''
-    if form.validate():     
+    print(form)
+    print(str(beername)+" beername")
+    print(str(beerstyle)+" beerstyle")
+    print(form.validate_on_submit())
+    flash(form.errors)
+    if form.validate_on_submit():     
         if beername == '' and beerstyle == '':
            #busca tudo  
            ret = db.collection.find()
+           flash("anything")
+           print(beerstyle+" style IF")           
         elif beername != '':
            #busca NAME
            ret = db.collection.find_one(beername)
+           print(ret)
+           print(beerstyle+" style ELSEIF")           
+           flash("elseIF")           
         else:
         #busca Style
-           ret = db.collection.find_one(beerstyle)
-         
-            
+           ret = db.collection.find_one(beerstyle)     
+           print(ret)
+           print(beerstyle+" style else")
+           flash("ELSE")
     conn.close()
-    return render_template('SearchResult.html', pages=ret) 
+    return render_template('BrejaSearch.html', form=form, ret=ret) 
                                 
                 

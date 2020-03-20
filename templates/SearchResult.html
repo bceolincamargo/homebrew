@@ -14,18 +14,28 @@
                       <tbody>
                         <!-- loop aqui pra  -->
                         <tr>
-						{% for page in pages %}
+						{% for i in ret %}
                           <td>
-                           {{ page }}
+                           {{ i }}
                           </td>                          
                           <td class="text-primary">
                             text color
                           </td>
 						  <td class="text-right">
 							<div class="row">
-								<a class="btn btn-primary pull-right" href="/beerrecord">Edit</a>
-									</div>
-								</td>
+								<form action="/beerrecord" method="post">{{ form.csrf_token }} 
+									<button type="submit" name="search" class="btn btn-primary pull-right">Edit</button> 
+								</form>
+							  {% with messages = get_flashed_messages() %}
+								{% if messages %}
+								<ul class=flashes>
+								{% for message in messages %}
+								<li>{{ message }}</li>
+								{% endfor %}
+								</ul>
+							  {% endif %}
+							{% endwith %}								
+						  </td>
 						{% endfor %}
                         </tr>
                         <!-- end loop aqui -->

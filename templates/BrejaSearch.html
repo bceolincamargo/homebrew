@@ -14,6 +14,7 @@
 				
 				 <table class="table">
                       <thead class=" text-primary">
+					  <form >{{ form.csrf_token }}  
 						<div class="input-group no-border">		 
 							<tr>
 								<th>Name</th>
@@ -21,19 +22,30 @@
 							</tr>
 							<tr>
 								<td>
-								<input type="text" value="" class="form-control"> 
+								<input type="text" name="beername" value="" class="form-control" size="15"> 
 								</td>
 								<td>
-								<input type="text" value="" class="form-control"> 
+								<input type="text" name="beerstyle" value="" class="form-control"> 
 								</td>
 								<td class="text-right">
 								<div class="row">
-								<a class="btn btn-primary pull-right" href="/beerfind">Search</a>
-									</div>
-								</td>
-							</button>
-							</tr>
+								
+									<button type="submit" name="Search" class="btn btn-primary pull-right">Search</button> 
+									{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}
+								
 
+								</div>
+								</td> 
+							</tr>
+						</form>
 						</div>
 				</table>  
 				<br>
@@ -44,14 +56,50 @@
               </div>
             </div>
           </div>
-	{%if found is not none%}
-		{{found}}
-	{%endif%}
-	{%if msg is not none%}
-		{{msg}}
-	{%endif%}
 {% endblock %}
+{% block result %}
+<div class="table-responsive">
+                    <table class="table">
+                      <thead class=" text-primary">
+                        <th>Name</th>
+                        <th>Style</th>
+                        <th>Description</th>						
+                        <th>Started</th>
+                        <th>Finished</th>
+                      </thead>
+                      <tbody>
+                        <!-- loop aqui pra  -->
+                        <tr>
+						{% for i in ret %}
+                          <td>
+                           {{ i }}
+                          </td>                          
+                          <td class="text-primary">
+                            text color
+                          </td>
+						  <td class="text-right">
+							<div class="row">
+								<form action="/beerrecord" method="post">{{ form.csrf_token }} 
+									<button type="submit" name="search" class="btn btn-primary pull-right">Edit</button> 
+								</form>
+							  {% with messages = get_flashed_messages() %}
+								{% if messages %}
+								<ul class=flashes>
+								{% for message in messages %}
+								<li>{{ message }}</li>
+								{% endfor %}
+								</ul>
+							  {% endif %}
+							{% endwith %}								
+						  </td>
+						{% endfor %}
+                        </tr>
+                        <!-- end loop aqui -->
 
+                      </tbody>
+                    </table>
+                  </div>
+{% endblock %}				  
 
 
 

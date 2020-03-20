@@ -11,6 +11,6 @@ class CreateEditBeer(FlaskForm):
 
 
 class SearchBeer(FlaskForm):
-    beername = StringField('beername', [validators.DataRequired(message='Name is required')])
-    beerstyle = StringField('beerstyle', [validators.DataRequired(message='Style is required')])
+    beername = StringField('beername')
+    beerstyle = StringField('beerstyle')
     Search = SubmitField('Search')    
