@@ -22,7 +22,7 @@ class BrewPiLess():
         self.externalvolt = str(externalvolt)
         self.tempmode = str(tempmode)
         self.modeinint = str(modeinint) 
-        self.path = '/home/hadoop/coletor/app/output'
+        self.path = '/home/hadoop/repo/brewpiless'
         
     def run_cmd(self, args_list):
         """
@@ -104,7 +104,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -131,7 +131,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
