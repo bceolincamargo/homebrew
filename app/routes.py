@@ -173,11 +173,15 @@ def beersearch():
         else:
         #busca Style
            retdb = db.collection.find({"beerstyle": beerstyle})     
-           print(str(ret)+'retorno else')
+           print(str(retdb)+'retorno else')
            print(beerstyle+" style else")
-           ret = list(retdb)
+           print(list(retdb))
+           tolist = list(retdb)
+           print(retdb["beername"])
            flash("searching by style")
+           print(tolist) 
     conn.close()
+    print(ret) 
     return render_template('BrejaSearch.html', form=form, ret=ret) 
                                 
                 
