@@ -69,13 +69,19 @@
                         <th>Finished</th>
                       </thead>
                       <tbody>
-{% for row in ret %}
-  <tr>
-  {% for key in row %}
-    <td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
-  {% endfor %}
-  </tr>
-{% endfor %}
+						{% for row in ret %}
+						  <tr>
+						  {% for key in row %}
+							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
+							{% endfor %}
+							<td class="text-right">
+								<div class="row">
+									<form action="/beerrecord" method="post">{{ form.csrf_token }}
+											<button type="submit" name="edit" class="btn btn-primary pull-right">Edit</button>
+									</form> 
+							</td>
+						  </tr>						  
+						{% endfor %}
                       </tbody>
                     </table>
                   </div>

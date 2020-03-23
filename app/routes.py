@@ -103,7 +103,7 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer
     res2 = collection.find({"finished": ""}).distinct("beername")
@@ -120,7 +120,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -147,37 +147,30 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
     form = SearchBeer()     
     beername = form.beername.data
     beerstyle = form.beerstyle.data
-    ret = '' 
-    print(str(beername)+" beername")
-    print(str(beerstyle)+" beerstyle")
-    print(form.validate_on_submit())
-    flash(form.errors)
+    ret = ''  
     if form.validate_on_submit():     
         if beername == '' and beerstyle == '':
            #busca tudo  
-            ret = list(collection.find())
-            if ret:
-                print(ret)
+           ret = list(collection.find())
+           if ret:
+               print(ret)
         elif beername != '':
            #busca NAME           
-           ret = db.collection.find_one({"beername": beername})
-           print(str(ret)+' retorno elsif')
-           flash("Beername found")   
+           ret = collection.find_one({"beername": beername})
            if ret:
-               flash("Beer "+beername+" Found!")           
+               print(ret)          
         else:
         #busca Style
-           ret = db.collection.find({"beerstyle": beerstyle})           
+           ret = list(collection.find({"beerstyle": beerstyle}))
            if ret:
-               flash("Beer Style "+beerstyle+" Found!")           
-           
+               print(ret)                       
     conn.close()  
     return render_template('SearchResult.html', form=form, ret=ret) 
                                 
