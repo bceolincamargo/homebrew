@@ -68,8 +68,8 @@
                         <th>Started</th>
                         <th>Finished</th>
                       </thead>
-                      <tbody>
-						{% for row in ret %}
+                      <tbody> 
+						{% for row in ret %} 
 						  <tr>
 						  {% for key in row %}
 							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>

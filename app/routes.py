@@ -163,9 +163,11 @@ def beersearch():
                print(ret)
         elif beername != '':
            #busca NAME           
-           ret = collection.find_one({"beername": beername})
-           if ret:
-               print(ret)          
+           ret2 = collection.find({"beername": beername})
+           if ret2:
+               ret = list(ret2)
+               print(type(ret))
+               print(ret)
         else:
         #busca Style
            ret = list(collection.find({"beerstyle": beerstyle}))
