@@ -103,7 +103,7 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer
     res2 = collection.find({"finished": ""}).distinct("beername")
@@ -120,7 +120,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -147,7 +147,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -162,26 +162,24 @@ def beersearch():
     if form.validate_on_submit():     
         if beername == '' and beerstyle == '':
            #busca tudo  
-           ret = db.collection.find()
-           print(str(ret)+'retorno if')
-           flash("anything")        
+            ret = list(collection.find())
+            if ret:
+                print(ret)
         elif beername != '':
-           #busca NAME
-           print(str(ret)+'retorno elsif')
-           ret = db.collection.find_one({"beername": beername}) 
-           flash("Beername found")           
+           #busca NAME           
+           ret = db.collection.find_one({"beername": beername})
+           print(str(ret)+' retorno elsif')
+           flash("Beername found")   
+           if ret:
+               flash("Beer "+beername+" Found!")           
         else:
         #busca Style
-           retdb = db.collection.find({"beerstyle": beerstyle})     
-           print(str(retdb)+'retorno else')
-           print(beerstyle+" style else")
-           print(list(retdb))
-           tolist = list(retdb)
-           print(retdb["beername"])
-           flash("searching by style")
-           print(tolist) 
-    conn.close()
-    print(ret) 
-    return render_template('BrejaSearch.html', form=form, ret=ret) 
+           ret = db.collection.find({"beerstyle": beerstyle})           
+           if ret:
+               flash("Beer Style "+beerstyle+" Found!")           
+           
+    conn.close()  
+    return render_template('SearchResult.html', form=form, ret=ret) 
                                 
+                
                 

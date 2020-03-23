@@ -1,10 +1,67 @@
+ 
+{% extends "base.html" %}
 
-{% extends "BrejaSearch.html" %}
+{% block top %}
+    <!-- table -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Beers Search</h4>
+                  <p class="card-category">Catalog</p>
+                </div>
+                <div class="card-body">
+				
+				 <table class="table">
+                      <thead class=" text-primary">
+					  <form method="post" action="/beersearch">{{ form.csrf_token }}  
+						<div class="input-group no-border">		 
+							<tr>
+								<th>Name</th>
+								<th>Style</th>
+							</tr>
+							<tr>
+								<td>
+								<input type="text" name="beername" value="" class="form-control" size="15"> 
+								</td>
+								<td>
+								<input type="text" name="beerstyle" value="" class="form-control"> 
+								</td>
+								<td class="text-right">
+								<div class="row">
+								
+									<button type="submit" name="Search" class="btn btn-primary pull-right" >Search</button> 
+									{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}					
 
-{% block cadastro %}
+								</div>
+								</td> 
+							</tr>
+						</form>
+						</div>
+				</table>  
+				<br>
+				<br>
+				<br>				
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}	
+{% if ret %}
+{% block middle %}
 <div class="table-responsive">
                     <table class="table">
                       <thead class=" text-primary">
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Style</th>
                         <th>Description</th>						
@@ -12,36 +69,16 @@
                         <th>Finished</th>
                       </thead>
                       <tbody>
-                        <!-- loop aqui pra  -->
-                        <tr>
-						{{ret}}
-						{% for i in ret %}
-                          <td>
-                           {{ i }}
-                          </td>                          
-                          <td class="text-primary">
-                            text color
-                          </td>
-						  <td class="text-right">
-							<div class="row">
-								<form action="/beerrecord" method="post">{{ form.csrf_token }} 
-									<button type="submit" name="search" class="btn btn-primary pull-right">Edit</button> 
-								</form>
-							  {% with messages = get_flashed_messages() %}
-								{% if messages %}
-								<ul class=flashes>
-								{% for message in messages %}
-								<li>{{ message }}</li>
-								{% endfor %}
-								</ul>
-							  {% endif %}
-							{% endwith %}								
-						  </td>
-						{% endfor %}
-                        </tr>
-                        <!-- end loop aqui -->
-
+{% for row in ret %}
+  <tr>
+  {% for key in row %}
+    <td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
+  {% endfor %}
+  </tr>
+{% endfor %}
                       </tbody>
                     </table>
                   </div>
 {% endblock %}				  
+{% endif %}
+
