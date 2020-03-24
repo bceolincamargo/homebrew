@@ -2,41 +2,51 @@
 
 <br>
 <br>
-{% block middle %}
-	Beer Catalog
-	   <div class="content">
-        <div class="container-fluid">
+{% block top %}
+    <!-- table -->
           <div class="row">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title">Create / Edit beers</h4>
-                  <p class="card-category">Fill the form</p>
+                  <h4 class="card-title ">Beers Search</h4>
+                  <p class="card-category">Catalog</p>
                 </div>
                 <div class="card-body">
-                  <form  action = "/beerrecord" method="post">{{ form.csrf_token }}{{ form.name }}
-                  <div class="form-field">{{ form.beername.label }} {{ form.beername }}</div>
-				  <div class="form-field">{{ form.beerstyle.label }} {{ form.beerstyle }}</div>
-				  <div class="form-field">{{ form.description.label }} {{ form.description }}</div>
-				  <div class="form-field">{{ form.created.label }} {{ form.created }}</div>				  
-				  <div class="form-field">{{ form.finished.label }} {{ form.finished }}</div>				  				  
-				  {{ form.submit }} 
-				  {% with messages = get_flashed_messages() %}
-					{% if messages %}
-					<ul class=flashes>
-					{% for message in messages %}
-					<li>{{ message }}</li>
-					{% endfor %}
-					</ul>
-				  {% endif %}
-				{% endwith %}
-				 
-                  </form>
+				
+				 <table class="table">
+                      <thead class=" text-primary">
+					  <form method="post" action="/beerrecord">{{ form.csrf_token }}  
+						<div class="input-group no-border">		 
+							<tr>
+								<th>Name</th>
+								<th>Style</th>
+								<th>Description</th>
+								<th>Created</th>
+								<th>Finished</th>
+							</tr>
+							<tr>
+								<td><input type="text" class="form-control" id="beername"></td>
+								<td><input type="text" class="form-control" id="beerstyle"></td>
+								<td><input type="text" class="form-control" id="description"></td>
+								<td><input type="text" class="form-control" id="created"></td>  
+								<td><input type="text" class="form-control" id="finished"></td>
+								<td class="text-right">
+									<div class="row">
+										<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
+									</div>
+								</td>
+							</tr>
+						</div>
+						</form>
+				</table>  
+				<br>
+				<br>
+				<br>				
+                  
                 </div>
               </div>
             </div>
           </div>
-		</div>
-      </div>
-          <!-- end form --> 
+{% endblock %}
+{% block middle %}
 {% endblock %}		  

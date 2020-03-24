@@ -103,7 +103,7 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer
     res2 = collection.find({"finished": ""}).distinct("beername")
@@ -114,13 +114,19 @@ def mainpage():
     style = tudodict['beerstyle']
     desc = tudodict['description']
     created = tudodict['created']
-
-    return render_template('index.html', name=name, style=style, desc=desc, created=created) 
+    createdformat = created.strftime("%d/%m/%Y %H:%M:%S")
+    
+    today = datetime.datetime.now() 
+    elapsedTime = str(today-created)
+    brewing = elapsedTime.replace(':','h')
+    days = brewing[0:13]+'m'
+    
+    return render_template('index.html', name=name, style=style, desc=desc, created=createdformat, days=days) 
 
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -131,6 +137,7 @@ def beerrecord():
     created = datetime.datetime.utcnow()
     finished = form.finished.data       
     values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created, "finished":''}
+    print(form.validate())
     if form.validate():
         verbeer = collection.find_one({"beername": beername})
         if verbeer:
@@ -147,7 +154,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -177,4 +184,33 @@ def beersearch():
     return render_template('SearchResult.html', form=form, ret=ret) 
                                 
                 
-                
+@app.route('/analytics', methods=["GET"]) # Beer Search
+def analytics():
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    db = conn.brewpiless
+    collection = db.beer    
+    
+    form = SearchBeer()     
+    beername = form.beername.data
+    beerstyle = form.beerstyle.data
+    ret = ''  
+    if form.validate_on_submit():     
+        if beername == '' and beerstyle == '':
+           #busca tudo  
+           ret = list(collection.find())
+           if ret:
+               print(ret)
+        elif beername != '':
+           #busca NAME           
+           ret2 = collection.find({"beername": beername})
+           if ret2:
+               ret = list(ret2)
+               print(type(ret))
+               print(ret)
+        else:
+        #busca Style
+           ret = list(collection.find({"beerstyle": beerstyle}))
+           if ret:
+               print(ret)                       
+    conn.close()  
+    return render_template('SearchResult.html', form=form, ret=ret)                 
