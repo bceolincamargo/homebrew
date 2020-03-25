@@ -7,9 +7,8 @@ import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
 from forms import CreateEditBeer, SearchBeer
-from flask import Flask, flash, redirect, render_template, request, url_for
-import json
-
+from flask import Flask, flash, redirect, render_template, request, url_for, stream_with_context, Response
+import json  
 
 class BrewPiLess():
     def __init__(self, beertemp, fridgetemp, beerset, fridgeset, temproom, tempaux, externalvolt, tempmode, modeinint):
@@ -183,34 +182,40 @@ def beersearch():
     conn.close()  
     return render_template('SearchResult.html', form=form, ret=ret) 
                                 
-                
-@app.route('/analytics', methods=["GET"]) # Beer Search
-def analytics():
+ 
+
+def getdata():
     conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
-    collection = db.beer    
-    
-    form = SearchBeer()     
-    beername = form.beername.data
-    beerstyle = form.beerstyle.data
-    ret = ''  
-    if form.validate_on_submit():     
-        if beername == '' and beerstyle == '':
-           #busca tudo  
-           ret = list(collection.find())
-           if ret:
-               print(ret)
-        elif beername != '':
-           #busca NAME           
-           ret2 = collection.find({"beername": beername})
-           if ret2:
-               ret = list(ret2)
-               print(type(ret))
-               print(ret)
-        else:
-        #busca Style
-           ret = list(collection.find({"beerstyle": beerstyle}))
-           if ret:
-               print(ret)                       
-    conn.close()  
-    return render_template('SearchResult.html', form=form, ret=ret)                 
+    collection = db.brewpiless
+
+    rdata = list(collection.find())
+    #print(rdata)
+    if rdata: 
+        # create an empty results object
+        value_list = []
+        data_list = []
+        # now loop through all of the documents in the cursor
+        ponto = []
+        for doc in rdata:
+            ponto.append([doc.get('date'), doc.get('\ufeffbeertemp')])
+            for keys in doc.keys():
+                if keys != '_id':
+                    value_list = [keys]
+                    #print(value_list)
+                    data_list.append(value_list)           
+        print(ponto)
+        return ponto
+    else:
+        print("Cursor is empty")
+        # return an empty result
+        return "[]"
+
+
+
+@app.route('/analytics', methods=["GET"]) # Analytics
+def analytics():    
+    data1 = getdata() 
+    #print(data1)
+    return render_template('Analytics.html',data1=data1) 
+                                          
