@@ -2,11 +2,11 @@ from wtforms import BooleanField, StringField, PasswordField, validators, Submit
 from flask_wtf import FlaskForm
 
 class CreateEditBeer(FlaskForm):
-    beername = StringField('Beer Name', [validators.DataRequired(message='Name is required')])
-    beerstyle = StringField('Beer Style', [validators.DataRequired(message='Style is required')])
-    description = StringField('Description', [validators.DataRequired(message='Description is required')])  
-    created = StringField('Created')  
-    finished = StringField('Finished')      
+    beername = StringField('beername')
+    beerstyle = StringField('beerstyle')
+    description = StringField('description')  
+    created = StringField('created')  
+    finished = StringField('finished')      
     Save = SubmitField('Save')
 
 

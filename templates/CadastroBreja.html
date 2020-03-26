@@ -8,8 +8,8 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title ">Beers Search</h4>
-                  <p class="card-category">Catalog</p>
+                  <h4 class="card-title ">Create/Edit Beer</h4>
+                  <p class="card-category"></p>
                 </div>
                 <div class="card-body">
 				
@@ -25,17 +25,26 @@
 								<th>Finished</th>
 							</tr>
 							<tr>
-								<td><input type="text" class="form-control" id="beername"></td>
-								<td><input type="text" class="form-control" id="beerstyle"></td>
-								<td><input type="text" class="form-control" id="description"></td>
-								<td><input type="text" class="form-control" id="created"></td>  
-								<td><input type="text" class="form-control" id="finished"></td>
+								<td><input type="text" name="beername" class="form-control" id="beername"></td>
+								<td><input type="text" name="beerstyle" class="form-control" id="beerstyle"></td>
+								<td><input type="text" name="description" class="form-control" id="description"></td>
+								<td><input type="text" name="created" class="form-control" id="created"></td>  
+								<td><input type="text" name="finished" class="form-control" id="finished"></td>
 								<td class="text-right">
 									<div class="row">
 										<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
 									</div>
 								</td>
 							</tr>
+								{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}				
 						</div>
 						</form>
 				</table>  
