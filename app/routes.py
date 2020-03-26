@@ -7,7 +7,7 @@ import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
 from forms import CreateEditBeer, SearchBeer
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, flash, redirect, render_template, request, url_for, Response
 import json
 
 
@@ -40,7 +40,7 @@ class BrewPiLess():
         
     def GravaArq(self):
         beername = 'beertest' #replace for input
-        created = time.strftime("%d/%m/%Y, %H:%M:%S")   
+        created = time.strftime("%d/%m/%Y %H:%M:%S")   
         arqformat = time.strftime("%d%m%Y%H%M%S")
         filename = beername+str(arqformat)+'.json'
         content = {'beername':beername, 'created':created, 'beertemp': self.beertemp, 'fridgetemp': self.fridgetemp, 'beerset':self.beerset,'fridgeset':self.fridgeset, 'temproom':self.temproom, 'tempaux':self.tempaux, 'externalvolt': self.externalvolt, 'tempmode':self.tempmode,'modeinint':self.modeinint, 'finished': ''}
@@ -136,7 +136,10 @@ def beerrecord():
     description =  form.description.data       
     created = datetime.datetime.utcnow()
     finished = form.finished.data       
+    
+    
     values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created, "finished":''}
+    print(values)
     print(form.validate())
     if form.validate():
         verbeer = collection.find_one({"beername": beername})
@@ -183,41 +186,65 @@ def beersearch():
     conn.close()  
     return render_template('SearchResult.html', form=form, ret=ret) 
                                 
-                
-@app.route('/analytics', methods=["GET"]) # Beer Search
-def analytics():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
-    db = conn.brewpiless
-    collection = db.beer    
-    
-    form = SearchBeer()     
-    beername = form.beername.data
-    beerstyle = form.beerstyle.data
-    ret = ''  
-    if form.validate_on_submit():     
-        if beername == '' and beerstyle == '':
-           #busca tudo  
-           ret = list(collection.find())
-           if ret:
-               print(ret)
-        elif beername != '':
-           #busca NAME           
-           ret2 = collection.find({"beername": beername})
-           if ret2:
-               ret = list(ret2)
-               print(type(ret))
-               print(ret)
-        else:
-        #busca Style
-           ret = list(collection.find({"beerstyle": beerstyle}))
-           if ret:
-               print(ret)                       
-    conn.close()  
-    return render_template('SearchResult.html', form=form, ret=ret)     
+                    
 
-import io
-import random
-from flask import Response
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
+#def getdata():
+#    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+#    db = conn.brewpiless
+#    collection = db.brewpiless
+#
+#    rdata = list(collection.find() )
+#    print(rdata)
+#    if rdata: 
+#        # create an empty results object
+#        value_list = []
+#        data_list = []
+#        # now loop through all of the documents in the cursor
+#        ponto = []
+#        for doc in rdata:
+#            ponto.append([doc.get('created'), float(doc.get('beertemp'))])
+#            for keys in doc.keys():
+#                if keys != '_id':
+#                    value_list = [keys]
+#                    #print(value_list)
+#                   data_list.append(value_list)           
+#        print(ponto)
+#        return ponto
+#    else:
+#        print("Cursor is empty")
+#        # return an empty result
+#        return "[]"
+
+
+
+@app.route('/analytics', methods=["GET"]) # Analytics
+def analytics():     
+    return render_template('Analytics.html') 
  
+ 
+
+@app.route('/chart-data')
+def chart_data():
+    def getdata():
+        while True:
+            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+            
+            with conn:
+                db = conn.brewpiless
+                collection = db.brewpiless
+                cursor = collection.find({}, {'created': 1, 'beertemp':1, 'fridgetemp':1}) 
+                 
+                if cursor:   
+                    for row in cursor:  
+                            json_data = json.dumps({'time':row['created'], 'value':row['beertemp'], 'value2':row['fridgetemp']})
+                            print(json_data)
+                            #print('{0} {1}'.format(row['created'], row['beertemp']))
+                           # json_data = json.dumps(
+                           #     {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
+                            yield f"data:{json_data}\n\n"
+                            time.sleep(5)
+                else:
+                    print("Cursor is empty")  
+                conn.close()  
+    return Response(getdata(), mimetype='text/event-stream')
+
