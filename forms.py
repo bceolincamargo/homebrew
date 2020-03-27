@@ -14,3 +14,21 @@ class SearchBeer(FlaskForm):
     beername = StringField('beername')
     beerstyle = StringField('beerstyle')
     Search = SubmitField('Search')    
+    
+class Recipe(FlaskForm):
+    beername = StringField('beername')
+    beerstyle = StringField('beerstyle')
+    description = StringField('description')  
+    created = StringField('created')  
+    finished = StringField('finished')      
+    Save = SubmitField('Save')
+
+
+class Ingredients(FlaskForm):
+    beername = StringField('beername')
+    beerstyle = StringField('beerstyle')
+    description = StringField('description')  
+    created = StringField('created')  
+    finished = StringField('finished')      
+    Save = SubmitField('Save')
+    
