@@ -103,7 +103,7 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer
     res2 = collection.find({"finished": ""}).distinct("beername")
@@ -126,7 +126,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -157,7 +157,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -189,7 +189,7 @@ def beersearch():
                     
 
 #def getdata():
-#    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+#    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
 #    db = conn.brewpiless
 #    collection = db.brewpiless
 #
@@ -227,7 +227,7 @@ def analytics():
 def chart_live_data():
     def getlivedata():
         while True:
-            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -255,22 +255,22 @@ def chart_live_data():
 def chart_data():
     def getdata():
         while True:
-            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
             
             with conn:
                 db = conn.brewpiless
                 collection = db.brewpiless
                 cursor = collection.find({}, {'created': 1, 'beertemp':1, 'fridgetemp':1}) 
-                 
+                print(cursor)  
                 if cursor:   
                     for row in cursor:  
-                            json_data = json.dumps({'time':row['created'], 'value':row['beertemp'], 'value2':row['fridgetemp']})
-                            print(json_data)
-                            #print('{0} {1}'.format(row['created'], row['beertemp']))
-                           # json_data = json.dumps(
-                           #     {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
-                            yield f"data:{json_data}\n\n"
-                            time.sleep(5)
+                        json_data = json.dumps({'time':row['created'], 'value':row['beertemp']})
+                        print(json_data)
+                        #print('{0} {1}'.format(row['created'], row['beertemp']))
+                       # json_data = json.dumps(
+                       #     {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
+                        yield f"data:{json_data}\n\n"
+                        time.sleep(1)
                 else:
                     print("Cursor is empty")  
                 conn.close()  
@@ -282,7 +282,7 @@ def chart_data():
     
 @app.route('/recipes', methods=["GET", 'POST']) # recipes
 def recipes():   
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -302,7 +302,7 @@ def recipes():
  
 @app.route('/ingredients', methods=["GET", 'POST']) # recipes
 def ingredients():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
