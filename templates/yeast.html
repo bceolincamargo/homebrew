@@ -7,25 +7,25 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title ">Beers Database</h4>
+                  <h4 class="card-title ">Yeast Database</h4>
                   <p class="card-category">Search</p>
                 </div>
                 <div class="card-body">
 				
 				 <table class="table">
                       <thead class=" text-primary">
-					  <form method="post" action="/beersearch">{{ form.csrf_token }}  
+					  <form method="post" action="/yeasts">{{ form.csrf_token }}  
 						<div class="input-group no-border">		 
 							<tr>
-								<th>Name</th>
-								<th>Style</th>
+								<th>Yeast Name</th>
+								<th>Yeast Type</th>
 							</tr>
 							<tr>
 								<td>
-								<input type="text" name="beername" value="" class="form-control" size="15"> 
+								<input type="text" name="yeastname" value="" class="form-control" size="15"> 
 								</td>
 								<td>
-								<input type="text" name="beerstyle" value="" class="form-control"> 
+								<input type="text" name="yeasttype" value="" class="form-control"> 
 								</td>
 								<td class="text-right">
 								<div class="row">
@@ -63,10 +63,17 @@
                       <thead class=" text-primary">
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Style</th>
-                        <th>Description</th>						
-                        <th>Started</th>
-                        <th>Finished</th>
+                        <th>Desc</th>
+                        <th>Type</th>						
+                        <th>Min Attenuation</th>
+                        <th>Max Attenuation</th>
+                        <th>Min Temp</th>						
+                        <th>Max Temp</th>						
+                        <th>Alcohol Min Tol.</th>
+                        <th>Alcohol Max Tol.</th>
+                        <th>Supplier</th>						
+                        <th>Format</th>					 
+	
                       </thead>
                       <tbody> 
 						{% for row in ret %} 
@@ -80,18 +87,7 @@
 											<button type="submit" name="edit" class="btn btn-primary pull-right">Edit</button>
 									</form> 
 							</td>
-							<td class="text-right">
-								<div class="row">
-									<form action="/analytics" method="post">{{ form.csrf_token }}
-											<button type="submit" name="chart" class="btn btn-primary pull-right">Chart</button>
-									</form> 
-							</td>							
-							<td class="text-right">	
-								<div class="row">
-									<form action="/recipe" method="post">{{ form.csrf_token }}
-											<button type="submit" name="recipe" class="btn btn-primary pull-right">Recipe</button>
-									</form> 
-							</td>							
+ 					
 						  </tr>						  
 						{% endfor %}
 							{% with messages = get_flashed_messages() %}

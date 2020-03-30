@@ -6,7 +6,7 @@ import subprocess
 import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
-from forms import CreateEditBeer, SearchBeer
+from forms import CreateEditBeer, SearchBeer, Yeast
 from flask import Flask, flash, redirect, render_template, request, url_for, Response
 import json
 
@@ -103,7 +103,7 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer
     res2 = collection.find({"finished": ""}).distinct("beername")
@@ -126,7 +126,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -157,7 +157,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -189,7 +189,7 @@ def beersearch():
                     
 
 #def getdata():
-#    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+#    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
 #    db = conn.brewpiless
 #    collection = db.brewpiless
 #
@@ -227,7 +227,7 @@ def analytics():
 def chart_live_data():
     def getlivedata():
         while True:
-            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -255,7 +255,7 @@ def chart_live_data():
 def chart_data():
     def getdata():
         while True:
-            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -282,7 +282,7 @@ def chart_data():
     
 @app.route('/recipes', methods=["GET", 'POST']) # recipes
 def recipes():   
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -299,20 +299,45 @@ def recipes():
  
  
  
- 
-@app.route('/ingredients', methods=["GET", 'POST']) # recipes
-def ingredients():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+  
+@app.route('/yeasts', methods=["GET", 'POST']) # YEAST
+def yeasts():     
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
-    collection = db.beer    
+    collection = db.yeast    
     
-    form = SearchBeer()     
-    beername = form.beername.data
-    beerstyle = form.beerstyle.data
+    form = Yeast()     
+    
+    yeastname = form.yeastname.data
+    description = form.description.data
+    yeasttype = form.yeasttype.data  
+    attenuationmin = form.attenuationmin.data  
+    attenuationmax = form.attenuationmax.data      
+    fermenttempmin = form.fermenttempmin.data      
+    fermenttempmax = form.fermenttempmax.data          
+    alcoholtolerancemin = form.alcoholtolerancemin.data      
+    alcoholtolerancemax = form.alcoholtolerancemax.data      
+    supplier = form.supplier.data          
+    yeastformat = form.yeastformat.data
     ret = ''  
     if form.validate_on_submit():     
-        print('if')
-    else:
-        print('else')
-    conn.close()  
-    return render_template('ingredients.html', form=form)  
+        if yeastname == '' and yeasttype == '':
+           #busca tudo  
+           ret = list(collection.find({}, {'name': 1, 'description':1, 'yeastType':1, 'attenuationMin':1, 'attenuationMax':1, 'fermentTempMin':1, 'fermentTempMax':1, 'alcoholToleranceMin':1, 'alcoholToleranceMax':1, 'supplier':1, 'yeastFormat':1}))                     
+           if ret:
+               print(ret)
+        elif yeastname != '':
+           #busca NAME           
+           ret = list(collection.find({"yeastname": yeastname}), {'updateDate': 0, 'createDate':0, 'categoryDisplay':0, 'category':0}) 
+           if ret:
+               ret = list(ret)
+               print(type(ret))
+               print(ret)
+        else:
+        #busca Style
+           ret = list(collection.find({"yeasttype": yeasttype}), {'updateDate': 0, 'createDate':0, 'categoryDisplay':0, 'category':0})
+           if ret:
+               print(ret)                       
+    conn.close() 
+    return render_template('yeast.html', form=form, ret=ret)  
+      

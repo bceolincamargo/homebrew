@@ -24,11 +24,17 @@ class Recipe(FlaskForm):
     Save = SubmitField('Save')
 
 
-class Ingredients(FlaskForm):
-    beername = StringField('beername')
-    beerstyle = StringField('beerstyle')
-    description = StringField('description')  
-    created = StringField('created')  
-    finished = StringField('finished')      
+class Yeast(FlaskForm):
+    yeastname = StringField('yeastname')
+    description = StringField('description')
+    yeasttype = StringField('yeasttype')  
+    attenuationmin = StringField('attenuationmin')  
+    attenuationmax = StringField('attenuationmax')      
+    fermenttempmin = StringField('fermenttempmin')      
+    fermenttempmax = StringField('fermenttempmax')          
+    alcoholtolerancemin = StringField('alcoholtolerancemin')      
+    alcoholtolerancemax = StringField('alcoholtolerancemax')      
+    supplier = StringField('supplier')          
+    yeastformat = StringField('yeastformat')
     Save = SubmitField('Save')
     
