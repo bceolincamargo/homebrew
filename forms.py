@@ -27,14 +27,4 @@ class Recipe(FlaskForm):
 class Yeast(FlaskForm):
     yeastname = StringField('yeastname')
     description = StringField('description')
-    yeasttype = StringField('yeasttype')  
-    attenuationmin = StringField('attenuationmin')  
-    attenuationmax = StringField('attenuationmax')      
-    fermenttempmin = StringField('fermenttempmin')      
-    fermenttempmax = StringField('fermenttempmax')          
-    alcoholtolerancemin = StringField('alcoholtolerancemin')      
-    alcoholtolerancemax = StringField('alcoholtolerancemax')      
-    supplier = StringField('supplier')          
-    yeastformat = StringField('yeastformat')
-    Save = SubmitField('Save')
-    
+    yeasttype = StringField('yeasttype')   

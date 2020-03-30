@@ -103,30 +103,30 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer
-    res2 = collection.find({"finished": ""}).distinct("beername")
-    res = list(res2) 
-    tudo = collection.find_one({"beername": res[0]})
-    tudodict = dict(tudo)
-    name = tudodict['beername']
-    style = tudodict['beerstyle']
-    desc = tudodict['description']
-    created = tudodict['created']
-    createdformat = created.strftime("%d/%m/%Y %H:%M:%S")
-    
-    today = datetime.datetime.now() 
-    elapsedTime = str(today-created)
-    brewing = elapsedTime.replace(':','h')
-    days = brewing[0:13]+'m'
-    
+    cursor = collection.find_one({"finished": ""}, {'beername': 1, 'beerstyle':1, 'description':1, 'created':1}) 
+    print(cursor)
+    if cursor:  
+        print('iffff') 
+        name = cursor['beername']
+        style = cursor['beerstyle']
+        desc = cursor['description']
+        created = cursor['created'] 
+        createdformat = created.strftime("%d/%m/%Y %H:%M:%S")
+        today = datetime.datetime.now() 
+        
+        elapsedTime = str(today-created)
+        brewing = elapsedTime.replace(':','h')
+        print(elapsedTime)
+        days = brewing[0:13]+'m'
     return render_template('index.html', name=name, style=style, desc=desc, created=createdformat, days=days) 
 
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -157,7 +157,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -189,7 +189,7 @@ def beersearch():
                     
 
 #def getdata():
-#    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+#    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
 #    db = conn.brewpiless
 #    collection = db.brewpiless
 #
@@ -227,7 +227,7 @@ def analytics():
 def chart_live_data():
     def getlivedata():
         while True:
-            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -255,7 +255,7 @@ def chart_live_data():
 def chart_data():
     def getdata():
         while True:
-            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -282,7 +282,7 @@ def chart_data():
     
 @app.route('/recipes', methods=["GET", 'POST']) # recipes
 def recipes():   
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -302,7 +302,7 @@ def recipes():
   
 @app.route('/yeasts', methods=["GET", 'POST']) # YEAST
 def yeasts():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.yeast    
     
@@ -310,34 +310,26 @@ def yeasts():
     
     yeastname = form.yeastname.data
     description = form.description.data
-    yeasttype = form.yeasttype.data  
-    attenuationmin = form.attenuationmin.data  
-    attenuationmax = form.attenuationmax.data      
-    fermenttempmin = form.fermenttempmin.data      
-    fermenttempmax = form.fermenttempmax.data          
-    alcoholtolerancemin = form.alcoholtolerancemin.data      
-    alcoholtolerancemax = form.alcoholtolerancemax.data      
-    supplier = form.supplier.data          
-    yeastformat = form.yeastformat.data
+    yeasttype = form.yeasttype.data   
     ret = ''  
     if form.validate_on_submit():     
+        print(form)
         if yeastname == '' and yeasttype == '':
            #busca tudo  
            ret = list(collection.find({}, {'name': 1, 'description':1, 'yeastType':1, 'attenuationMin':1, 'attenuationMax':1, 'fermentTempMin':1, 'fermentTempMax':1, 'alcoholToleranceMin':1, 'alcoholToleranceMax':1, 'supplier':1, 'yeastFormat':1}))                     
-           if ret:
-               print(ret)
+           print(ret)           
+           print('if')
         elif yeastname != '':
-           #busca NAME           
-           ret = list(collection.find({"yeastname": yeastname}), {'updateDate': 0, 'createDate':0, 'categoryDisplay':0, 'category':0}) 
-           if ret:
-               ret = list(ret)
-               print(type(ret))
-               print(ret)
+           #busca NAME        
+           print('elif')           
+           ret = list(collection.find_one({"name": yeastname}, {'name': 1, 'description':1, 'yeastType':1, 'attenuationMin':1, 'attenuationMax':1, 'fermentTempMin':1, 'fermentTempMax':1, 'alcoholToleranceMin':1, 'alcoholToleranceMax':1, 'supplier':1, 'yeastFormat':1})) 
+           print(type(ret))
+           print(ret)
         else:
         #busca Style
-           ret = list(collection.find({"yeasttype": yeasttype}), {'updateDate': 0, 'createDate':0, 'categoryDisplay':0, 'category':0})
-           if ret:
-               print(ret)                       
+           print('else')        
+           ret = list(collection.find({"yeastType": yeasttype}, {'name': 1, 'description':1, 'yeastType':1, 'attenuationMin':1, 'attenuationMax':1, 'fermentTempMin':1, 'fermentTempMax':1, 'alcoholToleranceMin':1, 'alcoholToleranceMax':1, 'supplier':1, 'yeastFormat':1}))
+           print(ret)                       
     conn.close() 
     return render_template('yeast.html', form=form, ret=ret)  
       
