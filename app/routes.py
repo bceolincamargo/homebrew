@@ -107,7 +107,7 @@ def mainpage():
     db = conn.brewpiless
     collection = db.beer
     cursor = collection.find_one({"finished": ""}, {'beername': 1, 'beerstyle':1, 'description':1, 'created':1}) 
-    print(cursor)
+ 
     if cursor:  
         print('iffff') 
         name = cursor['beername']
@@ -119,7 +119,7 @@ def mainpage():
         
         elapsedTime = str(today-created)
         brewing = elapsedTime.replace(':','h')
-        print(elapsedTime)
+ 
         days = brewing[0:13]+'m'
     return render_template('index.html', name=name, style=style, desc=desc, created=createdformat, days=days) 
 
@@ -136,21 +136,28 @@ def beerrecord():
     description =  form.description.data       
     created = datetime.datetime.utcnow()
     finished = form.finished.data       
-    
+     
+
+    urlid  = request.args.get('id')    
+    print(urlid)
+    if urlid:
+        d = list(collection.find_one({"_id": urlid}))
+        print(d)
+    else:
+        print("nao achou")
     
     values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created, "finished":''}
-    print(values)
-    print(form.validate())
-    if form.validate():
-        verbeer = collection.find_one({"beername": beername})
-        if verbeer:
-            flash("Ja exist")
-            collection.update_one({"beername": beername}, {"beerstyle":beerstyle}, {"finished":''}, upsert=False)
-            flash("updated ?")
-        else:
-            beerinserted = collection.insert_one(values)            
-            flash("New beer included!")
-        conn.close()  
+ 
+#    if form.validate():
+#        verbeer = collection.find_one({"beername": beername})
+#        if verbeer:
+#            flash("Ja exist")
+#            collection.update_one({"beername": beername}, {"beerstyle":beerstyle}, {"finished":''}, upsert=False)
+#            flash("updated ?")
+#        else:
+#            beerinserted = collection.insert_one(values)            
+#            flash("New beer included!")
+    conn.close()  
     return render_template('CadastroBreja.html', form=form)
    
   
@@ -164,25 +171,23 @@ def beersearch():
     form = SearchBeer()     
     beername = form.beername.data
     beerstyle = form.beerstyle.data
+    #urlid  = request.args.get('id')
     ret = ''  
     if form.validate_on_submit():     
         if beername == '' and beerstyle == '':
            #busca tudo  
            ret = list(collection.find())
-           if ret:
-               print(ret)
+ 
         elif beername != '':
            #busca NAME           
            ret2 = collection.find({"beername": beername})
            if ret2:
                ret = list(ret2)
-               print(type(ret))
-               print(ret)
+ 
         else:
         #busca Style
            ret = list(collection.find({"beerstyle": beerstyle}))
-           if ret:
-               print(ret)                       
+                   
     conn.close()  
     return render_template('SearchResult.html', form=form, ret=ret) 
                                 

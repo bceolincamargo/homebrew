@@ -74,20 +74,15 @@
 						  {% for key in row %}
 							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
 							{% endfor %}
-							<td class="text-right">
-								<div class="row">
-									<form action="/beerrecord" method="post">{{ form.csrf_token }}
-											<button type="submit" name="edit" class="btn btn-primary pull-right">Edit</button>
-									</form> 
-							</td>
-							<td class="text-right">
-								<div class="row">
+							<td class="text-right"> 								
+											<a href="/beerrecord?id={{ row['_id'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>
+     						</td>
+							<td class="text-right"> 
 									<form action="/analytics" method="post">{{ form.csrf_token }}
 											<button type="submit" name="chart" class="btn btn-primary pull-right">Chart</button>
 									</form> 
 							</td>							
-							<td class="text-right">	
-								<div class="row">
+							<td class="text-right">	 
 									<form action="/recipe" method="post">{{ form.csrf_token }}
 											<button type="submit" name="recipe" class="btn btn-primary pull-right">Recipe</button>
 									</form> 
