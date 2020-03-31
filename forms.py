@@ -28,3 +28,14 @@ class Yeast(FlaskForm):
     yeastname = StringField('yeastname')
     description = StringField('description')
     yeasttype = StringField('yeasttype')   
+
+
+class Hops(FlaskForm):
+    Hop = StringField('Hop')
+    Type = StringField('Type')
+    Origin = StringField('Origin')
+
+class Grains(FlaskForm):
+    Grain = StringField('Hop')
+    Origin = StringField('Origin')    
+    Mash = StringField('Mash')

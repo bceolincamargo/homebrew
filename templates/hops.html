@@ -7,26 +7,30 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title ">Beers Database</h4>
+                  <h4 class="card-title ">Hops Database</h4>
                   <p class="card-category">Search</p>
                 </div>
                 <div class="card-body">
 				
 				 <table class="table">
                       <thead class=" text-primary">
-					  <form method="post" action="/beersearch">{{ form.csrf_token }}  
+					  <form method="post" action="/hops">{{ form.csrf_token }}  
 						<div class="input-group no-border">		 
 							<tr>
-								<th>Name</th>
-								<th>Style</th>
+								<th>Hops Name</th>
+								<th>Type</th>
+								<th>Origin</th>								
 							</tr>
 							<tr>
 								<td>
-								<input type="text" name="beername" value="" class="form-control" size="15"> 
+								<input type="text" name="Hop" value="" class="form-control" > 
 								</td>
 								<td>
-								<input type="text" name="beerstyle" value="" class="form-control"> 
+								<input type="text" name="Type" value="" class="form-control"> 
 								</td>
+								<td>
+								<input type="text" name="Origin" value="" class="form-control"> 
+								</td>								
 								<td class="text-right">
 								<div class="row">
 								
@@ -58,14 +62,36 @@
 {% endblock %}	
 {% if ret %}
 {% block middle %}
+<table class="table">
+                      <thead class=" text-primary">
+<div class="input-group no-border">		
+ 
+<tr>
+<td align="justify">
+<b>Type</b> - Indicates if the hop is primarily thought of as a bittering hop, an aroma hop, or that it well suited for both jobs.
+</td>
+<td align="justify">
+<b>Alpha</b> - A measurement of potential bitterness in the hop that can be extracted during the boil. This is the amount of the hop, by weight, that is composed of the acid.
+</td>
+<td align="justify">
+<b>Beta</b> - ameasurement of the beta acid content of the hop. Beta acids do play a role in bittering, though they are not well converted in the boil. Instead, as alpha acids break down during fermentation and storage, beta acids slowly create bitterness via oxidation.
+</td>
+
+</div>
+</table>
+
+
+
+
 <div class="table-responsive">
                     <table class="table">
                       <thead class=" text-primary"> 
-                        <th>Name</th>
-                        <th>Style</th>
-                        <th>Description</th>						
-                        <th>Started</th>
-                        <th>Finished</th>
+                        <th><b>Hop</b></th>
+                        <th><b>Origin</th>						
+                        <th><b>Type</b></th>
+                        <th><b>Alpha</b></th>
+                        <th><b>Beta</b></th> 
+						<th><b>Notes</b></th> 
                       </thead>
                       <tbody> 
 						{% for row in ret %} 
@@ -73,19 +99,10 @@
 						  {% for key in row %}
 							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
 							{% endfor %}
-							<td class="text-right"> 								
-											<a href="/beerrecord?beername={{ row['beername'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>
-     						</td>
-							<td class="text-right"> 
-									<form action="/analytics" method="post">{{ form.csrf_token }}
-											<button type="submit" name="chart" class="btn btn-primary pull-right">Chart</button>
-									</form> 
-							</td>							
-							<td class="text-right">	 
-									<form action="/recipe" method="post">{{ form.csrf_token }}
-											<button type="submit" name="recipe" class="btn btn-primary pull-right">Recipe</button>
-									</form> 
-							</td>							
+							<td class="text-right">								
+											<a href="/yeastrecord?yeastname={{ row['name'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
+    						</td>
+ 					
 						  </tr>						  
 						{% endfor %}
 							{% with messages = get_flashed_messages() %}

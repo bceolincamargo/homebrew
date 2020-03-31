@@ -25,11 +25,11 @@
 								<th>Finished</th>
 							</tr>
 							<tr>
-								<td><input type="text" name="beername" class="form-control" id="beername" value="bruno"></td>
-								<td><input type="text" name="beerstyle" class="form-control" id="beerstyle"></td>
-								<td><input type="text" name="description" class="form-control" id="description"></td>
-								<td><input type="text" name="created" class="form-control" id="created"></td>  
-								<td><input type="text" name="finished" class="form-control" id="finished"></td>
+								<td><input type="text" name="beername" class="form-control" id="beername" value="{{ name }}"></td>
+								<td><input type="text" name="beerstyle" class="form-control" id="beerstyle" value="{{ style }}"></td>
+								<td><input type="text" name="description" class="form-control" id="description" value="{{ desc }}"></td>
+								<td><input type="text" name="created" class="form-control" id="created" value="{{ created }}"></td>  
+								<td><input type="text" name="finished" class="form-control" id="finished" value="{{ finished }}"></td>
 								<td class="text-right">
 									<div class="row">
 										<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					

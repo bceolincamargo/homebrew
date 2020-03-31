@@ -1,0 +1,130 @@
+ 
+{% extends "base.html" %}
+
+{% block top %}
+    <!-- table -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Grains Database</h4>
+                  <p class="card-category">Search</p>
+                </div>
+                <div class="card-body">
+				
+				 <table class="table">
+                      <thead class=" text-primary">
+					  <form method="post" action="/hops">{{ form.csrf_token }}  
+						<div class="input-group no-border">		 
+							<tr>
+								<th>Grain</th>
+								<th>Origin</th>
+								<th>Mash?</th>								
+							</tr>
+							<tr>
+								<td>
+								<input type="text" name="Grain" value="" class="form-control" > 
+								</td>
+								<td>
+								<input type="text" name="Origin" value="" class="form-control"> 
+								</td>
+								<td>
+								<input type="text" name="Mash" value="" class="form-control"> 
+								</td>								
+								<td class="text-right">
+								<div class="row">
+								
+									<button type="submit" name="Search" class="btn btn-primary pull-right" >Search</button> 
+									{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}					
+
+								</div>
+								</td> 
+							</tr>
+						</form>
+						</div>
+				</table>  
+				<br>
+				<br>
+				<br>				
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}	
+{% if ret %}
+{% block middle %}
+<table class="table">
+                      <thead class=" text-primary">
+<div class="input-group no-border">		
+ 
+<tr>
+<td align="justify">
+<b>Mash?</b> - If this column contains an "X", this grain must be mashed in order to provide any benefit to the beer. Grains without this designation may be used for color/flavor purposes via a simple steep.
+</td>
+<td align="justify">
+<b>Color</b> - The lovibond rating of the grain, expressed in SRM units.
+</td>
+<td align="justify">
+<b>Power</b> - this is the enzymatic power of the grain itself; it is the ability of the grain to break down starches into simpler (fermentable) sugars during mashing. A rating of ~35 indicates that the grain is self converting. Lower numbers (such as crystal malts, which have no diastatic power whatsoever) indicate grains that must "borrow" power from other grains that have an excess (most often, from a base grain such as pale malt, pilsner malt, etc).
+</td>
+<td align="justify">
+<b>Potential</b> - The potential amount of specific gravity points that this grain can yield, assuming a ratio of one pound of grain to one gallon of water. For example, pale malt (2 row) has a potential rating of 1.03634. If you brewed a give gallon batch of beer with five pounds of pale malt, you would have a potential gravity of roughly 1.036. Of course, potential is then modified by your own brewhouse efficiency, which usually runs somewhere in the 60% - 80% range (depending on your setup, gear, and methods).
+</td>
+<td align="justify">
+<b>Max %</b> - Maximum recommended percentage of this grain in your total grain bill.
+</td>
+
+</div>
+</table>
+
+
+
+
+<div class="table-responsive">
+                    <table class="table">
+                      <thead class=" text-primary"> 
+                        <th><b>Grain</b></th>
+                        <th><b>Origin</th>						
+                        <th><b>Mash?</b></th>
+                        <th><b>Color</b></th>
+                        <th><b>Power</b></th> 
+						<th><b>Potential</b></th> 
+                        <th><b>Max %</b></th> 
+						<th><b>Notes</b></th> 						
+                      </thead>
+                      <tbody> 
+						{% for row in ret %} 
+						  <tr>
+						  {% for key in row %}
+							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
+							{% endfor %}
+							<td class="text-right">								
+											<a href="/yeastrecord?yeastname={{ row['name'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
+    						</td>
+ 					
+						  </tr>						  
+						{% endfor %}
+							{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}				
+                      </tbody>
+                    </table>
+                  </div>
+{% endblock %}				  
+{% endif %}
+

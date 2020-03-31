@@ -60,8 +60,7 @@
 {% block middle %}
 <div class="table-responsive">
                     <table class="table">
-                      <thead class=" text-primary">
-                        <th>ID</th>
+                      <thead class=" text-primary"> 
                         <th>Name</th>
                         <th>Desc</th>
                         <th>Type</th>						
@@ -81,12 +80,9 @@
 						  {% for key in row %}
 							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
 							{% endfor %}
-							<td class="text-right">
-								<div class="row">
-									<form action="/beerrecord" method="post">{{ form.csrf_token }}
-											<button type="submit" name="edit" class="btn btn-primary pull-right">Edit</button>
-									</form> 
-							</td>
+							<td class="text-right">								
+											<a href="/yeastrecord?yeastname={{ row['name'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
+    						</td>
  					
 						  </tr>						  
 						{% endfor %}
