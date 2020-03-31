@@ -14,12 +14,11 @@
 				
 				 <table class="table">
                       <thead class=" text-primary">
-					  <form method="post" action="/hops">{{ form.csrf_token }}  
+					  <form method="post" action="/grains">{{ form.csrf_token }}  
 						<div class="input-group no-border">		 
 							<tr>
 								<th>Grain</th>
-								<th>Origin</th>
-								<th>Mash?</th>								
+								<th>Origin</th> 					
 							</tr>
 							<tr>
 								<td>
@@ -27,10 +26,7 @@
 								</td>
 								<td>
 								<input type="text" name="Origin" value="" class="form-control"> 
-								</td>
-								<td>
-								<input type="text" name="Mash" value="" class="form-control"> 
-								</td>								
+								</td> 
 								<td class="text-right">
 								<div class="row">
 								
@@ -82,7 +78,7 @@
 <td align="justify">
 <b>Max %</b> - Maximum recommended percentage of this grain in your total grain bill.
 </td>
-
+<th>
 </div>
 </table>
 

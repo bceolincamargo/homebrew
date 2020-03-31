@@ -36,6 +36,6 @@ class Hops(FlaskForm):
     Origin = StringField('Origin')
 
 class Grains(FlaskForm):
-    Grain = StringField('Hop')
+    Grain = StringField('Grain')
     Origin = StringField('Origin')    
     Mash = StringField('Mash')

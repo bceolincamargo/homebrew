@@ -103,7 +103,7 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer
     cursor = collection.find_one({"finished": ""}, {'beername': 1, 'beerstyle':1, 'description':1, 'created':1}) 
@@ -126,7 +126,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -136,10 +136,30 @@ def beerrecord():
     description =  form.description.data       
     created = datetime.datetime.utcnow()
     finished = form.finished.data            
-
+       
+    values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created, "finished":''}
+    
     beernameid  = request.args.get('beername')    
-    print(beernameid)
-    if beernameid:
+    #variables for return
+    name = ''
+    style = ''
+    desc = ''
+    created = ''
+    finished = ''
+
+    if form.validate():
+        verbeer = collection.find_one({"beername": beername})
+        
+        if verbeer:
+            flash("Beer already exists")
+            collection.update_one({"beername": beername}, {"beerstyle":beerstyle}, {"finished":'finished'}, upsert=False)
+
+        else:
+            beerinserted = collection.insert_one(values)            
+            flash("New beer included!")
+
+    
+    elif beernameid:
         indb = collection.find_one({"beername": beernameid}, {'_id': 0})
         if indb:
             name = indb['beername']
@@ -147,24 +167,7 @@ def beerrecord():
             desc = indb['description']
             created = indb['created'] 
             finished = indb['finished'] 
-            
-            print("achou no db")
-            print(indb)
-            print(name)
-    else:
-        print("nao achou")
     
-    values = {"beername": beername, "beerstyle":beerstyle, "description":description, "created": created, "finished":''}
- 
-#    if form.validate():
-#        verbeer = collection.find_one({"beername": beername})
-#        if verbeer:
-#            flash("Ja exist")
-#            collection.update_one({"beername": beername}, {"beerstyle":beerstyle}, {"finished":''}, upsert=False)
-#            flash("updated ?")
-#        else:
-#            beerinserted = collection.insert_one(values)            
-#            flash("New beer included!")
     conn.close()  
     return render_template('CadastroBreja.html', form=form, name=name, style=style, desc=desc, created=created, finished=finished)
    
@@ -172,7 +175,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -202,7 +205,7 @@ def beersearch():
                     
 
 #def getdata():
-#    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+#    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
 #    db = conn.brewpiless
 #    collection = db.brewpiless
 #
@@ -240,7 +243,7 @@ def analytics():
 def chart_live_data():
     def getlivedata():
         while True:
-            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -268,7 +271,7 @@ def chart_live_data():
 def chart_data():
     def getdata():
         while True:
-            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -293,7 +296,7 @@ def chart_data():
   
 @app.route('/hops', methods=["GET", 'POST']) # HOPS
 def hops():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.hops    
     
@@ -333,35 +336,28 @@ def hops():
 
 @app.route('/grains', methods=["GET", 'POST']) # GRAINS
 def grains():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.grains    
     
     form = Grains()      
     
-    Hop = form.Hop.data 
-    Type = form.Type.data 
-    Origin = form.Origin.data     
+    Grain = form.Grain.data 
+    Origin = form.Origin.data        
     ret = ''  
     if form.validate_on_submit():    
-        if Hop == '' and Type == '' and Origin == '' :
+        if Grain == '' and Origin == '' :
            #busca tudo  
-           ret = list(collection.find({}, {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                     
+           ret = list(collection.find({}, {'_id': 0, 'Grain': 1, 'Origin':1, 'Mash':1, 'Color':1, 'Power':1, 'Potential':1, 'MaxPercent':1, 'Notes':1}))                     
            print(ret)           
            print('if')
-        elif Hop != '':
+        elif Grain != '':
            #busca NAME        
            print('elif')           
-           ret = collection.find({"Hop": Hop},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1})                    
+           ret = collection.find({"Grain": Grain}, {'_id': 0, 'Grain': 1, 'Origin':1, 'Mash':1, 'Color':1, 'Power':1, 'Potential':1, 'MaxPercent':1, 'Notes':1})                    
            print(type(ret))
            
-           print(ret)
-        elif Type != '':
-           #busca NAME        
-           print('elif')           
-           ret = list(collection.find({"Type": Type},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                     
-           print(type(ret))
-           print(ret)           
+           print(ret)      
         else:
         #busca Style
            print('else')        
@@ -374,7 +370,7 @@ def grains():
     
 @app.route('/recipes', methods=["GET", 'POST']) # recipes
 def recipes():   
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -394,7 +390,7 @@ def recipes():
   
 @app.route('/yeasts', methods=["GET", 'POST']) # YEAST
 def yeasts():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.yeast    
     
@@ -428,7 +424,7 @@ def yeasts():
 
 @app.route('/yeastrecord', methods=["GET", 'POST']) # YEAST
 def yeastrecord():     
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
     db = conn.brewpiless
     collection = db.yeast    
          
