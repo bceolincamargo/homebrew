@@ -103,7 +103,7 @@ def index():
 
 @app.route('/mainpage') # Main Page
 def mainpage():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer
     cursor = collection.find_one({"finished": ""}, {'beername': 1, 'beerstyle':1, 'description':1, 'created':1}) 
@@ -126,7 +126,7 @@ def mainpage():
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
 def beerrecord():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -175,7 +175,7 @@ def beerrecord():
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
 def beersearch():
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -205,7 +205,7 @@ def beersearch():
                     
 
 #def getdata():
-#    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+#    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
 #    db = conn.brewpiless
 #    collection = db.brewpiless
 #
@@ -243,7 +243,7 @@ def analytics():
 def chart_live_data():
     def getlivedata():
         while True:
-            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -271,7 +271,7 @@ def chart_live_data():
 def chart_data():
     def getdata():
         while True:
-            conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+            conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
             
             with conn:
                 db = conn.brewpiless
@@ -296,7 +296,7 @@ def chart_data():
   
 @app.route('/hops', methods=["GET", 'POST']) # HOPS
 def hops():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.hops    
     
@@ -336,7 +336,7 @@ def hops():
 
 @app.route('/grains', methods=["GET", 'POST']) # GRAINS
 def grains():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.grains    
     
@@ -370,7 +370,7 @@ def grains():
     
 @app.route('/recipes', methods=["GET", 'POST']) # recipes
 def recipes():   
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.beer    
     
@@ -390,7 +390,7 @@ def recipes():
   
 @app.route('/yeasts', methods=["GET", 'POST']) # YEAST
 def yeasts():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.yeast    
     
@@ -424,7 +424,7 @@ def yeasts():
 
 @app.route('/yeastrecord', methods=["GET", 'POST']) # YEAST
 def yeastrecord():     
-    conn = pymongo.MongoClient('mongodb://192.168.20.15', 27017)
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
     collection = db.yeast    
          
