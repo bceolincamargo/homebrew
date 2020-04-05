@@ -309,27 +309,23 @@ def hops():
     if form.validate_on_submit():    
         if Hop == '' and Type == '' and Origin == '' :
            #busca tudo  
-           ret = list(collection.find({}, {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                     
-           print(ret)           
+           ret = list(collection.find({}, {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                       
            print('if')
         elif Hop != '':
            #busca NAME        
            print('elif')           
            ret = collection.find({"Hop": Hop},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1})                    
-           print(type(ret))
-           
-           print(ret)
+           print(type(ret)) 
         elif Type != '':
            #busca NAME        
            print('elif')           
            ret = list(collection.find({"Type": Type},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                     
-           print(type(ret))
-           print(ret)           
+           print(type(ret)) 
         else:
         #busca Style
            print('else')        
            ret = list(collection.find({"Origin": Origin},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                     
-           print(ret)                       
+                 
     conn.close() 
     return render_template('hops.html', form=form, ret=ret)      
     
