@@ -9,6 +9,8 @@ from htmlmin.minify import html_minify
 from forms import CreateEditBeer, SearchBeer, Yeast, Hops, Grains
 from flask import Flask, flash, redirect, render_template, request, url_for, Response
 import json
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 class BrewPiLess():
@@ -234,8 +236,50 @@ def beersearch():
 
 
 @app.route('/analytics', methods=["GET", 'POST']) # Analytics
-def analytics():     
-    return render_template('Analytics.html') 
+def analytics():             
+
+    beer = 'beertest'
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    db = conn.brewpiless
+    collection = db.brewpiless    
+    
+    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
+
+    df['created'] = pd.to_datetime(df['created'])
+    df['beertemp'] = df['beertemp'].astype('float') 
+    df['fridgetemp'] = df['fridgetemp'].astype('float') 
+    df['beerset'] = df['beerset'].astype('float') 
+    df['fridgeset'] = df['fridgeset'].astype('float') 
+    df = df.sort_values('created', ascending=True) 
+    tam = df.count()
+ 
+    label = df['created']
+    y1 =  df['beertemp']
+    y2 = df['fridgetemp']
+    y3 = df['beerset']
+    y4 = df['fridgeset']   
+    
+    plt.style.use('seaborn-whitegrid')    
+    fig, ax = plt.subplots()
+    plt.rcParams["figure.figsize"] = [16,9]
+    plt.plot(label,y1, label='Beer Temp', linewidth=2)
+    plt.plot(label,y2, label='Fridge Temp', linewidth=2)
+    plt.plot(label,y3, label='Beer Set', linewidth=2)
+    plt.plot(label,y4, label='Fridge Set', linewidth=2)
+    
+    plt.title(beer, fontsize=14, fontweight=0, color='blue')
+    # Add legend
+    plt.legend(loc=4, ncol=1,fontsize='small')
+
+
+    # set custom tick labels
+    ax.set_xticklabels(label, rotation=45, horizontalalignment='right')
+    
+    path = '/static/images/icons/'+beer+'.png'
+    print(path)
+    plt.savefig('C:/Users/bceolincamar/Documents/GitHub/homebrew/static/images/'+beer+'.png')
+    
+    return render_template('Analytics.html', path = path) 
  
  
 

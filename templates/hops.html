@@ -7,15 +7,46 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title ">Hops Database</h4>
+                  <h4 class="card-title ">Hops Database</h4> 
                   <p class="card-category">Search</p>
+				  <div class="mdc-tab-bar" role="tablist">
+				  <div class="mdc-tab-scroller">
+					<div class="mdc-tab-scroller__scroll-area">
+					  <div class="mdc-tab-scroller__scroll-content">
+						<button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
+						  <span class="mdc-tab__content">
+							<span class="mdc-tab__icon material-icons" aria-hidden="true">search</span>
+							<span class="mdc-tab__text-label">Search</span>
+						  </span>
+						  <span class="mdc-tab-indicator mdc-tab-indicator--active">
+							<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+						  </span>
+						  <span class="mdc-tab__ripple"></span>
+						</button>
+						<button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
+						  <span class="mdc-tab__content">
+							<span class="mdc-tab__icon material-icons" aria-hidden="true">add</span>
+							<span class="mdc-tab__text-label">Create</span>
+						  </span>
+						  <span class="mdc-tab-indicator mdc-tab-indicator--active">
+							<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+						  </span>
+						  <span class="mdc-tab__ripple"></span>
+						</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
                 </div>
                 <div class="card-body">
-				
+				<div class="mdc-tab-bar" role="tablist">
+
 				 <table class="table">
+				 
                       <thead class=" text-primary">
+					  
 					  <form method="post" action="/hops">{{ form.csrf_token }}  
-						<div class="input-group no-border">		 
+						<div class="input-group no-border">		 						
 							<tr>
 								<th>Hops Name</th>
 								<th>Type</th>
