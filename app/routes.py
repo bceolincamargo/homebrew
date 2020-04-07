@@ -7,11 +7,10 @@ import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
 from forms import CreateEditBeer, SearchBeer, Yeast, Hops, Grains
-from flask import Flask, flash, redirect, render_template, request, url_for, Response
+from flask import Flask, flash, redirect, render_template, request, url_for, Response, jsonify
 import json
 import pandas as pd
-import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as plt 
 
 class BrewPiLess():
     def __init__(self, beertemp, fridgetemp, beerset, fridgeset, temproom, tempaux, externalvolt, tempmode, modeinint):
@@ -74,7 +73,6 @@ class BrewPiLess():
         return ret, out, err         
 
 
-@app.route('/')
 @app.route('/logs', methods=["GET"])
 
 def index():
@@ -103,6 +101,8 @@ def index():
     
     return "collecting from brewpiless"
 
+
+@app.route('/')
 @app.route('/mainpage') # Main Page
 def mainpage():     
     conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
@@ -235,8 +235,8 @@ def beersearch():
 
 
 
-@app.route('/analytics', methods=["GET", 'POST']) # Analytics
-def analytics():             
+@app.route('/analyticsOLD', methods=["GET", 'POST']) # Analytics
+def analyticsOLD():             
 
     beer = 'beertest'
     conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
@@ -275,12 +275,28 @@ def analytics():
     # set custom tick labels
     ax.set_xticklabels(label, rotation=45, horizontalalignment='right')
     
-    path = '/static/images/icons/'+beer+'.png'
+    path = '/css/images/icons/'+beer+'.png'
     print(path)
-    plt.savefig('C:/Users/bceolincamar/Documents/GitHub/homebrew/static/images/'+beer+'.png')
+    plt.savefig('C:/Users/bceolincamar/Documents/GitHub/homebrew/static/css/images/icons/'+beer+'.png')
     
     return render_template('Analytics.html', path = path) 
+
  
+@app.route('/analytics', methods=["GET", 'POST']) # Analytics
+def data():             
+    
+    beer = 'beertest'
+    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+    db = conn.brewpiless
+    collection = db.brewpiless    
+    charts = mongo.db.charts
+    result = charts.find_one({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})
+    
+#    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
+
+  
+    
+    return jsonify({'results': result['created','beertemp']})  
  
 
 @app.route('/chart-live-data')

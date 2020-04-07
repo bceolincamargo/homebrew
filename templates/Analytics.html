@@ -1,10 +1,42 @@
 
 {% extends "base.html" %}
 
-{% block top %}
-  
-  <img src= {{ path }}  border="0"> 
-   <img src='C:/Users/bceolincamar/Documents/GitHub/homebrew/'{{ path}} alt="Chart" height="42" width="42">
+{% block top %} 
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+	<script
+	  src="http://code.jquery.com/jquery-3.4.1.min.js"
+	  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+	  crossorigin="anonymous">
+	 </script>
+  </head>
+  <body>
+  	<div class="ct-chart ct-perfect-fourth"></div>
+<script>
+	var getData = $.get('/data');
+	
+	getData.done(function(results){
+	var data = {
+		  // A labels array that can contain any sort of values
+		  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+		  // Our series array that contains series objects or in this case series data arrays
+		  series: [
+			results.results
+		  ]
+		};
+
+		// Create a new line chart object where as first parameter we pass in a selector
+		// that is resolving to our chart container element. The Second parameter
+		// is the actual data object.
+		var myChart  = new Chartist.Line('.ct-chart', data);};
+			
+</script>
+  </body>
+</html>
+   
 {% endblock %}		 
  
 
