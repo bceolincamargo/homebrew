@@ -282,15 +282,14 @@ def analyticsOLD():
     return render_template('Analytics.html', path = path) 
 
  
-@app.route('/analytics', methods=["GET", 'POST']) # Analytics
+@app.route('/analytics', methods=["GET"]) # Analytics
 def data():             
     
     beer = 'beertest'
     conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
     db = conn.brewpiless
-    collection = db.brewpiless    
-    charts = mongo.db.charts
-    result = charts.find_one({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})
+    collection = db.brewpiless     
+    result = collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})
     
 #    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
 
