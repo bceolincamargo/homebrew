@@ -24,18 +24,50 @@ class Recipe(FlaskForm):
     Save = SubmitField('Save')
 
 
-class Yeast(FlaskForm):
-    yeastname = StringField('yeastname')
-    description = StringField('description')
-    yeasttype = StringField('yeasttype')   
-
+class Yeasts(FlaskForm):
+    Yeast = StringField('Yeast')
+    Yeastlab = StringField('Yeastlab')
+    Yeasttype = StringField('Yeasttype')   
+    
+class CreateEditYeast(FlaskForm):
+    yeast = StringField('Yeast')
+    lab = StringField('Lab')
+    typey = StringField('Typey')  
+    formato = StringField('Formato')  
+    temp = StringField('Temp')      
+    att = StringField('Att')         
+    flo = StringField('Flo')      
+    notes = StringField('Notes')         
+    Save = SubmitField('Save')    
 
 class Hops(FlaskForm):
     Hop = StringField('Hop')
     Type = StringField('Type')
     Origin = StringField('Origin')
 
+class CreateEditHop(FlaskForm):
+    hop = StringField('Hop')
+    origin = StringField('Origin')
+    hoptype = StringField('hoptype')  
+    alpha = StringField('Alpha')  
+    beta = StringField('Beta')      
+    notes = StringField('Notes')         
+    Save = SubmitField('Save')
+    
+    
 class Grains(FlaskForm):
     Grain = StringField('Grain')
     Origin = StringField('Origin')    
     Mash = StringField('Mash')
+
+class CreateEditGrain(FlaskForm):
+    grain = StringField('Grain')
+    origin = StringField('Origin')
+    mash = StringField('Mash')  
+    color = StringField('Color')  
+    power = StringField('Power')      
+    potential = StringField('Potential')         
+    maxp = StringField('Maxp')      
+    notes = StringField('Notes')         
+    Save = SubmitField('Save')    
+    

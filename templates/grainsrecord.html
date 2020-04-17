@@ -1,0 +1,67 @@
+ {% extends "base.html" %}
+
+<br>
+<br>
+{% block top %}
+    <!-- table -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Create/Edit Grain</h4>
+                  <p class="card-category"></p>
+                </div>
+                <div class="card-body">
+				
+				 <table class="table">
+                      <thead class=" text-primary">
+					  <form method="post" action="/grainsrecord">{{ form.csrf_token }}  
+						<div class="input-group no-border">		 
+							<tr>
+								<th>Grain</th>
+								<th>Origin</th>
+								<th>Mash</th>
+								<th>Color</th>
+								<th>Power</th>
+								<th>Potential</th>
+								<th>Max %</th>
+								<th>Notes</th>
+							</tr>
+							<tr>
+								<td><input type="text" name="grain" class="form-control" id="grain" value="{{ Grain }}"></td>
+								<td><input type="text" name="origin" class="form-control" id="origin" value="{{ Origin }}"></td>
+								<td><input type="text" name="mash" class="form-control" id="mash" value="{{ Mash }}"></td>
+								<td><input type="text" name="color" class="form-control" id="color" value="{{ Color }}"></td>  
+								<td><input type="text" name="power" class="form-control" id="power" value="{{ Power }}"></td>
+								<td><input type="text" name="potential" class="form-control" id="potential" value="{{ Potential }}"></td>								
+								<td><input type="text" name="maxp" class="form-control" id="maxp" value="{{ MaxPercent }}"></td>								
+								<td><input type="text" name="notes" class="form-control" id="notes" value="{{ Notes }}"></td>								
+								<td class="text-right">
+									<div class="row">
+										<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
+									</div>
+								</td>
+							</tr>
+								{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}				
+						</div>
+						</form>
+				</table>  
+				<br>
+				<br>
+				<br>				
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}
+{% block middle %}
+{% endblock %}		  

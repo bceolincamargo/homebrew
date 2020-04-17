@@ -9,37 +9,54 @@
                 <div class="card-header card-header-primary">
                   <h4 class="card-title ">Hops Database</h4> 
                   <p class="card-category">Search</p>
-				  <div class="mdc-tab-bar" role="tablist">
-				  <div class="mdc-tab-scroller">
-					<div class="mdc-tab-scroller__scroll-area">
-					  <div class="mdc-tab-scroller__scroll-content">
-						<button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
-						  <span class="mdc-tab__content">
-						  
-							<span class="mdc-tab__icon material-icons" aria-hidden="true">search</span>
-							<span class="mdc-tab__text-label">Search</span>
-						  </span>
-						  <span class="mdc-tab-indicator mdc-tab-indicator--active">
-							<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-						  </span>
-						  <span class="mdc-tab__ripple"></span>
-						</button>
-						<button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="1">
-						  <span class="mdc-tab__content">
-							<span class="mdc-tab__icon material-icons" aria-hidden="true">add</span>
-							<span class="mdc-tab__text-label">Create</span>
-						  </span>
-						  <span class="mdc-tab-indicator mdc-tab-indicator--active">
-							<span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-						  </span>
-						  <span class="mdc-tab__ripple"></span>
-						</button>
-					  </div>
-					</div>
-				  </div>
-				</div>
+ 
                 </div>
+                <div class="card-body">
+				
+				 <table class="table">
+                      <thead class=" text-primary">
+					  <form method="post" action="/hopssearch">{{ form.csrf_token }}  
+						<div class="input-group no-border">		 
+							<tr>
+								<th>Hops</th>
+								<th>Type</th> 
+								<th>Origin</th> 								
+							</tr>
+							<tr>
+								<td>
+								<input type="text" name="Hop" value="" class="form-control" > 
+								</td>
+								<td>
+								<input type="text" name="hoptype" value="" class="form-control" > 
+								</td>								
+								<td>
+								<input type="text" name="Origin" value="" class="form-control"> 
+								</td> 
+								<td class="text-right">
+								<div class="row">
+								
+									<button type="submit" name="Search" class="btn btn-primary pull-right" >Search</button> 
+									{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}					
 
+								</div>
+								</td> 
+							</tr>
+						</form>
+						</div>
+				</table>  
+				<br>
+				<br>
+				<br>				
+                  
+                </div>
             </div>
           </div>
 {% endblock %}	
@@ -83,7 +100,7 @@
 							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
 							{% endfor %}
 							<td class="text-right">								
-											<a href="/yeastrecord?yeastname={{ row['name'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
+											<a href="/hopsrecord?Hop={{ row['Hop'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
     						</td>
  					
 						  </tr>						  

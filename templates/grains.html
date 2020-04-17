@@ -14,7 +14,7 @@
 				
 				 <table class="table">
                       <thead class=" text-primary">
-					  <form method="post" action="/grains">{{ form.csrf_token }}  
+					  <form method="post" action="/grainssearch">{{ form.csrf_token }}  
 						<div class="input-group no-border">		 
 							<tr>
 								<th>Grain</th>
@@ -27,6 +27,9 @@
 								<td>
 								<input type="text" name="Origin" value="" class="form-control"> 
 								</td> 
+								<td>
+								<input type="text" name="Mash" value="" class="form-control"> 
+								</td> 								
 								<td class="text-right">
 								<div class="row">
 								
@@ -104,7 +107,7 @@
 							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
 							{% endfor %}
 							<td class="text-right">								
-											<a href="/yeastrecord?yeastname={{ row['name'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
+											<a href="/grainsrecord?Grain={{ row['Grain'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
     						</td>
  					
 						  </tr>						  

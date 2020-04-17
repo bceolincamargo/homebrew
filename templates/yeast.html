@@ -14,18 +14,22 @@
 				
 				 <table class="table">
                       <thead class=" text-primary">
-					  <form method="post" action="/yeasts">{{ form.csrf_token }}  
+					  <form method="post" action="/yeastssearch">{{ form.csrf_token }}  
 						<div class="input-group no-border">		 
 							<tr>
-								<th>Yeast Name</th>
-								<th>Yeast Type</th>
+								<th>Name</th>
+								<th>Lab</th>
+								<th>Type</th>
 							</tr>
 							<tr>
 								<td>
-								<input type="text" name="yeastname" value="" class="form-control" size="15"> 
+								<input type="text" name="Yeast" value="" class="form-control" size="15"> 
 								</td>
 								<td>
-								<input type="text" name="yeasttype" value="" class="form-control"> 
+								<input type="text" name="Yeastlab" value="" class="form-control" size="15"> 
+								</td>
+								<td>
+								<input type="text" name="Yeasttype" value="" class="form-control"> 
 								</td>
 								<td class="text-right">
 								<div class="row">
@@ -62,16 +66,13 @@
                     <table class="table">
                       <thead class=" text-primary"> 
                         <th>Name</th>
-                        <th>Desc</th>
+                        <th>Lab</th>
                         <th>Type</th>						
-                        <th>Min Attenuation</th>
-                        <th>Max Attenuation</th>
-                        <th>Min Temp</th>						
-                        <th>Max Temp</th>						
-                        <th>Alcohol Min Tol.</th>
-                        <th>Alcohol Max Tol.</th>
-                        <th>Supplier</th>						
-                        <th>Format</th>					 
+                        <th>Form</th>
+                        <th>Temp</th>
+                        <th>Attenuation</th>						
+                        <th>Flocculation</th>						
+                        <th>Notes</th>
 	
                       </thead>
                       <tbody> 
@@ -81,7 +82,7 @@
 							<td id="{{ key }}" class="{{ loop.cycle('odd', 'even') }}">{{ row[key] }}</td>
 							{% endfor %}
 							<td class="text-right">								
-											<a href="/yeastrecord?yeastname={{ row['name'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
+											<a href="/yeastsrecord?Yeast={{ row['Name'] }}" type="submit" name="edit" class="btn btn-primary pull-right">Edit</a>											
     						</td>
  					
 						  </tr>						  

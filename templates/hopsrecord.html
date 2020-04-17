@@ -1,0 +1,63 @@
+ {% extends "base.html" %}
+
+<br>
+<br>
+{% block top %}
+    <!-- table -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Create/Edit Hop</h4>
+                  <p class="card-category"></p>
+                </div>
+                <div class="card-body">
+				
+				 <table class="table">
+                      <thead class=" text-primary">
+					  <form method="post" action="/hopsrecord">{{ form.csrf_token }}  
+						<div class="input-group no-border">		 
+							<tr>
+								<th>Hop</th>
+								<th>Origin</th>
+								<th>Type</th>
+								<th>Alpha</th>
+								<th>Beta</th>
+								<th>Notes</th>
+							</tr>
+							<tr>
+								<td><input type="text" name="hop" class="form-control" id="hop" value="{{ Hop }}"></td>
+								<td><input type="text" name="origin" class="form-control" id="origin" value="{{ Origin }}"></td>
+								<td><input type="text" name="hoptype" class="form-control" id="hoptype" value="{{ Type }}"></td>
+								<td><input type="text" name="alpha" class="form-control" id="alpha" value="{{ Alpha }}"></td>  
+								<td><input type="text" name="beta" class="form-control" id="beta" value="{{ Beta }}"></td>
+								<td><input type="text" name="notes" class="form-control" id="notes" value="{{ Notes }}"></td>								
+								<td class="text-right">
+									<div class="row">
+										<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
+									</div>
+								</td>
+							</tr>
+								{% with messages = get_flashed_messages() %}
+										{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<li>{{ message }}</li>
+										{% endfor %}
+										</ul>
+									  {% endif %}
+									{% endwith %}				
+						</div>
+						</form>
+				</table>  
+				<br>
+				<br>
+				<br>				
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}
+{% block middle %}
+{% endblock %}		  
