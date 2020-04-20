@@ -6,13 +6,14 @@ import subprocess
 import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
-from forms import CreateEditBeer, CreateEditHop, CreateEditGrain, CreateEditYeast, SearchBeer, Yeasts, Hops, Grains
+from forms import CreateEditBeer, CreateEditHop, CreateEditGrain, CreateEditYeast,CreateRecipe, SearchBeer, Yeasts, Hops, Grains
 from flask import Flask, flash, redirect, render_template, request, url_for, Response, jsonify
 import json
 import pandas as pd
 import matplotlib.pyplot as plt 
 
 conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
+db = conn.brewpiless
     
 class BrewPiLess():
     def __init__(self, beertemp, fridgetemp, beerset, fridgeset, temproom, tempaux, externalvolt, tempmode, modeinint):
@@ -106,13 +107,11 @@ def index():
 
 @app.route('/')
 @app.route('/mainpage') # Main Page
-def mainpage():      
-    db = conn.brewpiless
+def mainpage():       
     collection = db.beer
     cursor = collection.find_one({"finished": ""}, {'beername': 1, 'beerstyle':1, 'description':1, 'created':1}) 
  
-    if cursor:  
-        print('iffff') 
+    if cursor:   
         name = cursor['beername']
         style = cursor['beerstyle']
         desc = cursor['description']
@@ -128,8 +127,7 @@ def mainpage():
 
 
 @app.route('/beerrecord', methods=["GET","POST"]) # Beer Cadastro 
-def beerrecord(): 
-    db = conn.brewpiless
+def beerrecord():  
     collection = db.beer    
     
     form = CreateEditBeer()     
@@ -176,8 +174,7 @@ def beerrecord():
   
 
 @app.route('/beersearch', methods=["GET", "POST"]) # Beer Search
-def beersearch(): 
-    db = conn.brewpiless
+def beersearch():  
     collection = db.beer    
     
     form = SearchBeer()     
@@ -236,8 +233,7 @@ def beersearch():
 @app.route('/analyticsOLD', methods=["GET", 'POST']) # Analytics
 def analyticsOLD():             
 
-    beer = 'beertest' 
-    db = conn.brewpiless
+    beer = 'beertest'  
     collection = db.brewpiless    
     
     df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
@@ -282,8 +278,7 @@ def analyticsOLD():
 @app.route('/analytics', methods=["GET"]) # Analytics
 def data():             
     
-    beer = 'beertest' 
-    db = conn.brewpiless
+    beer = 'beertest'  
     collection = db.brewpiless     
     result = list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1}))
     
@@ -350,8 +345,7 @@ def chart_data():
     
   
 @app.route('/hopssearch', methods=["GET", 'POST']) # HOPS
-def hops():     
-    db = conn.brewpiless
+def hops():      
     collection = db.hops    
     
     form = Hops()      
@@ -385,8 +379,7 @@ def hops():
     
 @app.route('/hopsrecord', methods=["GET","POST"]) # Beer Cadastro 
 def hopsrecord():
-
-    db = conn.brewpiless
+ 
     collection = db.hops    
     
     form = CreateEditHop()     
@@ -433,8 +426,7 @@ def hopsrecord():
     return render_template('hopsrecord.html', form=form, Hop=Hop, Origin=Origin, Type=Type, Alpha=Alpha, Beta=Beta, Notes=Notes)
    
 @app.route('/grainssearch', methods=["GET", 'POST']) # GRAINS
-def grains():      
-    db = conn.brewpiless
+def grains():       
     collection = db.grains    
     
     form = Grains()      
@@ -459,8 +451,7 @@ def grains():
     return render_template('grains.html', form=form, ret=ret)      
 
 @app.route('/grainsrecord', methods=["GET","POST"]) # Beer Cadastro 
-def grainsrecord(): 
-    db = conn.brewpiless
+def grainsrecord():  
     collection = db.grains    
     
     form = CreateEditGrain()     
@@ -494,7 +485,7 @@ def grainsrecord():
             collection.update_one({"Grain": grain}, {'$set':{"Origin":origin, "Mash":mash, "Color":color, "Power":power, "Potential":potential, "MaxPercent":maxp, "Notes":notes}}, upsert=False)
 
         else:
-            beerinserted = collection.insert_one(values)            
+            graininserted = collection.insert_one(values)            
             flash("New Grain included!")
     
     elif grainnameid:
@@ -515,8 +506,7 @@ def grainsrecord():
 
 
 @app.route('/yeastssearch', methods=["GET", 'POST']) # YEAST
-def yeastssearch():      
-    db = conn.brewpiless
+def yeastssearch():       
     collection = db.yeast    
     
     form = Yeasts()     
@@ -550,66 +540,61 @@ def yeastssearch():
     return render_template('yeast.html', form=form, ret=ret)  
 
 @app.route('/yeastsrecord', methods=["GET","POST"]) # Beer Cadastro 
-def yeastsrecord(): 
-    db = conn.brewpiless
+def yeastsrecord():  
     collection = db.yeast   
     
-    form = CreateEditYeast()     
-    grain = form.grain.data
-    origin = form.origin.data
-    mash =  form.mash.data       
-    mash =  form.mash.data       
-    color = form.color.data       
-    power = form.power.data            
-    potential = form.potential.data 
-    maxp = form.maxp.data 
-    notes = form.notes.data 
-    
-    values = {"Grain": grain, "Origin":origin, "Mash":mash, "Color":color, "Power":power, "Potential":potential, "MaxPercent":maxp, "Notes":notes}
-    
-    grainnameid  = request.args.get('Grain')    
+    form = CreateEditYeast()    
+    name = form.yeast.data
+    lab = form.lab.data
+    typey =  form.typey.data       
+    formato =  form.formato.data       
+    temp = form.temp.data       
+    attenuation = form.att.data            
+    flocculation = form.flo.data 
+    notes = form.notes.data  
+    values = {"Name": name, "Lab":lab, "Type":typey, "Temp":temp, "Attenuation":attenuation, "Flocculation":flocculation, "Notes":notes}
+ 
+    yeastnameid  = request.args.get('Name')    
     #variables for return
-    Grain = ''
-    Origin = ''
-    Mash = ''
-    Color = ''
-    Power = ''
-    Potential = ''
-    MaxPercent = ''    
+    Name = ''
+    Lab = ''
+    Typey = ''
+    Formato = ''
+    Temp = ''
+    Attenuation = ''
+    Flocculation = ''    
     Notes = ''
     
     if form.validate():
-        verhop = collection.find_one({"Grain": grain})
+        veryeast = collection.find_one({"Name": name})
         
-        if verhop:
-            flash("Grain details updated !")
-            collection.update_one({"Grain": grain}, {'$set':{"Origin":origin, "Mash":mash, "Color":color, "Power":power, "Potential":potential, "MaxPercent":maxp, "Notes":notes}}, upsert=False)
+        if veryeast:
+            flash("Yeast details updated !")
+            collection.update_one({"Name": name}, {'$set':{"Lab":lab, "Type":typey, "Temp":temp, "Attenuation":attenuation, "Flocculation":flocculation, "Notes":notes}}, upsert=False)
 
         else:
-            beerinserted = collection.insert_one(values)            
-            flash("New Grain included!")
+            yeastinserted = collection.insert_one(values)            
+            flash("New Yeast included!")
     
-    elif grainnameid:
-        indb = collection.find_one({"Grain": grainnameid}, {'_id': 0})
+    elif yeastnameid:
+        indb = collection.find_one({"Name": yeastnameid}, {'_id': 0})
         if indb:
-            Grain = indb['Grain']
-            Origin = indb['Origin']
-            Mash = indb['Mash']
-            Color = indb['Color'] 
-            Power = indb['Power'] 
-            Potential = indb['Potential'] 
-            MaxPercent = indb['MaxPercent'] 
+            Name = indb['Name']
+            Lab = indb['Lab']
+            Typey = indb['Type']
+            Formato = indb['Form'] 
+            Temp = indb['Temp'] 
+            Attenuation = indb['Attenuation'] 
+            Flocculation = indb['Flocculation'] 
             Notes = indb['Notes']            
     
     conn.close()  
-    return render_template('grainsrecord.html', form=form, Grain=Grain, Origin=Origin, Mash=Mash, Color=Color, Power=Power, Potential=Potential, MaxPercent=MaxPercent, Notes=Notes)
+    return render_template('yeastrecord.html', form=form, Name=Name, Lab=Lab, Typey=Typey, Formato=Formato, Temp=Temp, Attenuation=Attenuation, Flocculation=Flocculation, Notes=Notes)
 
 
     
-@app.route('/recipessearch', methods=["GET", 'POST']) # recipes
-def recipes():   
-    conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
-    db = conn.brewpiless
+@app.route('/recipes', methods=["GET", 'POST']) # recipes 
+def recipes():     
     collection = db.beer    
     
     form = SearchBeer()     
@@ -625,4 +610,67 @@ def recipes():
  
  
  
-  
+@app.route('/recipesrecord', methods=["GET", 'POST']) # recipes
+def dropdown():     
+
+
+    form = CreateRecipe()     
+    crecipe = db.recipes
+    cgrains = db.grains
+    chops = db.hops
+    cyeasts = db.yeast
+    Glist = []
+    Hlist = []
+    Ylist = []
+    
+    Grains = list(cgrains.find({}, {'_id': 0, 'Grain': 1}))
+    
+    for doc in Grains:
+        for v in doc.values():
+            Glist.append(v) 
+     
+    Hops = list(chops.find({}, {'_id': 0, 'Hop': 1}))
+    for doc in Hops:
+        for v in doc.values():
+            Hlist.append(v) 
+     
+ 
+    Yeasts = list(cyeasts.find({}, {'_id': 0, 'Name': 1}))
+    for doc in Yeasts:
+        for v in doc.values():
+            Ylist.append(v) 
+     
+    if request.method == 'POST':
+        name = form.name.data
+        selgrains = request.form.getlist('grains')
+        selhops = request.form.getlist('hop')
+        selyeast = request.form.getlist('yeast')
+        fermentables = form.fermentable.data
+                        
+        print(selgrains)
+        print(selhops)        
+        print(selyeast) 
+        print(name)        
+        print(fermentables) 
+        listgrain = []
+        for grain in selgrains:
+            print("aqui "+grain)
+            r = list(cgrains.find({"Grain": grain}, {'_id':1}))
+            listgrain.append(r)
+            
+            
+        values = {"Name":name, "Grains": listgrain, "Hops": selyeast, "Yeasts": selyeast, "Fermentables": fermentables }
+        print(values)
+#       checkrecipe = crecipe.find_one({"Name": name})
+        
+#        if checkrecipe:
+#           flash("Recipe updated !")
+#           collection.update_one({"Name": name}, {'$set':{"Lab":lab, "Type":typey, "Temp":temp, "Attenuation":attenuation, "Flocculation":flocculation, "Notes":notes}}, upsert=False)
+#
+#       else:
+#           recipeinserted = collection.insert_one(values)            
+#            flash("Recipe included!")
+#   
+# 
+    return render_template('recipesrecord.html',Glist=Glist, Hlist=Hlist, Ylist=Ylist, form=form)
+    

@@ -1,4 +1,4 @@
-from wtforms import BooleanField, StringField, PasswordField, validators, SubmitField
+from wtforms import BooleanField, StringField, PasswordField, validators, SubmitField, SelectField
 from flask_wtf import FlaskForm
 
 class CreateEditBeer(FlaskForm):
@@ -23,6 +23,14 @@ class Recipe(FlaskForm):
     finished = StringField('finished')      
     Save = SubmitField('Save')
 
+class CreateRecipe(FlaskForm): 
+    name = StringField('name')
+    grain = StringField('grains')
+    hop = StringField('hop')  
+    yeast = StringField('yeast')  
+    fermentable = StringField('fermentable')      
+    Save = SubmitField('Save')
+
 
 class Yeasts(FlaskForm):
     Yeast = StringField('Yeast')
@@ -30,13 +38,13 @@ class Yeasts(FlaskForm):
     Yeasttype = StringField('Yeasttype')   
     
 class CreateEditYeast(FlaskForm):
-    yeast = StringField('Yeast')
+    yeast = StringField('Name')
     lab = StringField('Lab')
-    typey = StringField('Typey')  
-    formato = StringField('Formato')  
+    typey = StringField('Type')  
+    formato = StringField('Form')  
     temp = StringField('Temp')      
-    att = StringField('Att')         
-    flo = StringField('Flo')      
+    att = StringField('Attenuation')         
+    flo = StringField('Flocculation')      
     notes = StringField('Notes')         
     Save = SubmitField('Save')    
 
