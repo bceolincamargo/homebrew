@@ -6,11 +6,12 @@ import subprocess
 import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
-from forms import CreateEditBeer, CreateEditHop, CreateEditGrain, CreateEditYeast,CreateRecipe, SearchBeer, Yeasts, Hops, Grains
+from forms import CreateEditBeer, CreateEditHop, CreateEditGrain, CreateEditYeast,CreateRecipe, SearchBeer, Yeasts, Hops, Grains, Recipe
 from flask import Flask, flash, redirect, render_template, request, url_for, Response, jsonify
 import json
 import pandas as pd
 import matplotlib.pyplot as plt 
+from bson.objectid import ObjectId
 
 conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
 db = conn.brewpiless
@@ -595,25 +596,56 @@ def yeastsrecord():
     
 @app.route('/recipes', methods=["GET", 'POST']) # recipes 
 def recipes():     
-    collection = db.beer    
+    crecipes = db.recipes    
+    cgrains = db.grains
+    chops = db.hops
+    cyeasts = db.yeast
     
-    form = SearchBeer()     
-    beername = form.beername.data
-    beerstyle = form.beerstyle.data
-    ret = ''  
+    form = Recipe()     
+    recipename = form.recipename.data
+    recipestyle = form.recipestyle.data
+    recipemethod = form.recipemethod.data
+    ret = ''   
+    grainlist = []
+    
     if form.validate_on_submit():     
-        print('if')
-    else:
-        print('else')
-    conn.close()  
-    return render_template('recipes.html', form=form) 
+        
+        if recipename == '' and recipestyle == '' and recipemethod == '':
+            #busca tudo  
+            ret = crecipes.find({}, {'_id': 0, 'Name': 1, 'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1})              
+            for g in ret:
+                print(g['Grains'])   
+                for x in g['Grains'] :
+                    print(x)
+                    r = cgrains.find_one(x, {'_id':0, 'Grain':1})
+                    print(r)
+                    print(type(r))
+                    for nameg in r.values():
+                        
+                        print(nameg)
+                        grainlist.append(nameg)
+                        
+            print(grainlist)
+        elif recipename != '':
+            #busca NAME        
+            print('elif')           
+            ret =  crecipes.find({"Name": recipename}, {'_id': 0, 'Name': 1, 'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1})               
+
+            print(type(ret))
+            print(ret)
+        else:
+            #busca Style
+            print('else')        
+            ret = list(crecipes.find({"Type": Yeasttype}, {'_id': 0, 'Name': 1, 'Lab':1, 'Type':1, 'Form':1, 'Temp':1, 'Attenuation':1, 'Flocculation':1, 'Notes':1}))
+            print(ret)                       
+    conn.close() 
+         
+    return render_template('recipes.html', form=form, ret=ret) 
  
  
  
 @app.route('/recipesrecord', methods=["GET", 'POST']) # recipes
-def dropdown():     
-
-
+def recipesrecord():     
     form = CreateRecipe()     
     crecipe = db.recipes
     cgrains = db.grains
@@ -653,24 +685,36 @@ def dropdown():
         print(name)        
         print(fermentables) 
         listgrain = []
+        listhop = []
+        listyeast = []
+        
         for grain in selgrains:
             print("aqui "+grain)
-            r = list(cgrains.find({"Grain": grain}, {'_id':1}))
+            r = cgrains.find_one({"Grain": grain}, {'_id':1})
             listgrain.append(r)
             
+        for hop in selhops:
+            print("aqui "+hop)
+            r = chops.find_one({"Hop": hop}, {'_id':1})
+            listhop.append(r)
             
-        values = {"Name":name, "Grains": listgrain, "Hops": selyeast, "Yeasts": selyeast, "Fermentables": fermentables }
+        for yeast in selyeast:
+            print("aqui "+yeast)
+            r = cyeasts.find_one({"Name": yeast}, {'_id':1})
+            listyeast.append(r)
+            
+        values = {"Name":name, "Grains": listgrain, "Hops": listhop, "Yeasts": listyeast, "Fermentables": fermentables }
         print(values)
-#       checkrecipe = crecipe.find_one({"Name": name})
+        checkrecipe = crecipe.find_one({"Name": name})
         
-#        if checkrecipe:
-#           flash("Recipe updated !")
-#           collection.update_one({"Name": name}, {'$set':{"Lab":lab, "Type":typey, "Temp":temp, "Attenuation":attenuation, "Flocculation":flocculation, "Notes":notes}}, upsert=False)
-#
-#       else:
-#           recipeinserted = collection.insert_one(values)            
-#            flash("Recipe included!")
-#   
-# 
+        if checkrecipe:
+           flash("Recipe updated !")
+           crecipe.update_one({"Name": name}, {'$set':{"Lab":lab, "Type":typey, "Temp":temp, "Attenuation":attenuation, "Flocculation":flocculation, "Notes":notes}}, upsert=False)
+
+        else:
+            recipeinserted = crecipe.insert_one(values)            
+            flash("Recipe included!")
+   
+ 
     return render_template('recipesrecord.html',Glist=Glist, Hlist=Hlist, Ylist=Ylist, form=form)
     

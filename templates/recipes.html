@@ -14,18 +14,22 @@
 				
 				 <table class="table">
                       <thead class=" text-primary">
-					  <form method="post" action="/beersearch">{{ form.csrf_token }}  
+					  <form method="post" action="/recipes">{{ form.csrf_token }}  
 						<div class="input-group no-border">		 
 							<tr>
 								<th>Name</th>
-								<th>Style</th>
+								<th>Style</th>				
+								<th>Method</th>
 							</tr>
 							<tr>
 								<td>
-								<input type="text" name="beername" value="" class="form-control" size="15"> 
+								<input type="text" name="recipename" value="" class="form-control" > 
 								</td>
 								<td>
-								<input type="text" name="beerstyle" value="" class="form-control"> 
+								<input type="text" name="recipestyle" value="" class="form-control"> 
+								</td>								
+								<td>
+								<input type="text" name="recipemethod" value="" class="form-control"> 
 								</td>
 								<td class="text-right">
 								<div class="row">
@@ -61,8 +65,8 @@
 <div class="table-responsive">
                     <table class="table">
                       <thead class=" text-primary">
-                        <th>Style</th>
-                        <th>Description</th>						
+                        <th>Name</th>
+                        <th>Style</th>						
                         <th>Method</th>
                         <th>Ingredients</th>
                       </thead>
@@ -74,7 +78,7 @@
 							{% endfor %}
 							<td class="text-right">
 								<div class="row">
-									<form action="/beerrecord" method="post">{{ form.csrf_token }}
+									<form action="/recipesrecord" method="post">{{ form.csrf_token }}
 											<button type="submit" name="edit" class="btn btn-primary pull-right">Edit</button>
 									</form> 
 							</td> 

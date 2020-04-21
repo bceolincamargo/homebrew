@@ -16,11 +16,9 @@ class SearchBeer(FlaskForm):
     Search = SubmitField('Search')    
     
 class Recipe(FlaskForm):
-    beername = StringField('beername')
-    beerstyle = StringField('beerstyle')
-    description = StringField('description')  
-    created = StringField('created')  
-    finished = StringField('finished')      
+    recipename = StringField('recipename')
+    recipestyle = StringField('recipestyle')
+    recipemethod = StringField('recipemethod')        
     Save = SubmitField('Save')
 
 class CreateRecipe(FlaskForm): 
