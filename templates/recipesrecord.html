@@ -12,6 +12,10 @@
 	<div class="card-body" height="180" > 
 	 <table class="table">
 		<thead class=" text-primary"> 
+		
+		<link rel="stylesheet" href="css/bootstrap-table-expandable.css">
+		<script src="js/bootstrap-table-expandable.js"></script>
+
 		<form method="post" action="/recipesrecord">{{ form.csrf_token }}  
 		<div class="input-group no-border">	   
 		<tr>
@@ -65,7 +69,17 @@
 					<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
 				</div>
 			</td>
-		</tr>   
+			
+		</tr>
+		<tr>
+		  <td colspan="5"><h4>Additional information</h4>
+			<ul>
+			  <li><a href="#">USA on Wikipedia</a></li>
+			  <li><a href="#">National Atlas of the United States</a></li>
+			  <li><a href="#">Historical Documents</a></li>
+			</ul>
+		  </td>
+		</tr>		
 		  </form>
 		</table>
     </div>
