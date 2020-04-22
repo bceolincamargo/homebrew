@@ -16,6 +16,8 @@
 		<div class="input-group no-border">	   
 		<tr>
 					<th>Recipe Name</th>
+					<th>Style</th>
+					<th>Method</th>
 					<th>Grain</th>
 					<th>Hop</th>			
 					<th>Yeast</th>
@@ -23,40 +25,46 @@
 		</tr>
 
 		<tr >
-		<td>
-		<input type="text" name="name" value="" class="form-control" size="15"> 
-		</td>
-				<td>
-					<select id="grains" name="grains" method="GET" multiple class="form-control" size="20"> // addition here
-						{% for x in Glist %}
-						<option value= "{{ x }}" SELECTED>{{ x }}</option>"
-						{% endfor %}  
-					</select> 
-				</td>
-				<td>						
+			<td>
+				<input type="text" name="name" value="" class="form-control" size="15"> 
+			</td>
+			<td>
+				<input type="text" name="style" value="" class="form-control" size="15"> 
+			</td>
+			<td>
+				<input type="text" name="method" value="" class="form-control" size="15"> 
+			</td>	
+			<td>
+				<select id="grains" name="grains" method="GET" multiple class="form-control" size="20"> // addition here
+					{% for x in Glist %}
+					<option value= "{{ x }}" SELECTED>{{ x }}</option>"
+					{% endfor %}  
+				</select> 
+			</td>
+			<td>						
 
-					<select id="hop"  name="hop" method="GET" multiple class="form-control">
-						{% for Hope in Hlist %} 
-								<option value= "{{ Hope }}" SELECTED>{{ Hope }}</option>" 
-						{% endfor %}  
-					</select>
-				</td>
-				<td>
-					<select id="yeast"  name="yeast" method="GET" multiple class="form-control">
-						{% for Yeast  in Ylist %}
-						<option value= "{{ Yeast }}" SELECTED>{{ Yeast }}</option>"
-						{% endfor %} 		 
-					</select> 
-				</td>
-					<td>
-						<input type="text" name="fermentable" value="" class="form-control" size="15"> 
-					</td>
-								
-				<td class="text-right">
-					<div class="row">
-						<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
-					</div>
-				</td>
+				<select id="hop"  name="hop" method="GET" multiple class="form-control">
+					{% for Hope in Hlist %} 
+							<option value= "{{ Hope }}" SELECTED>{{ Hope }}</option>" 
+					{% endfor %}  
+				</select>
+			</td>
+			<td>
+				<select id="yeast"  name="yeast" method="GET" multiple class="form-control">
+					{% for Yeast  in Ylist %}
+					<option value= "{{ Yeast }}" SELECTED>{{ Yeast }}</option>"
+					{% endfor %} 		 
+				</select> 
+			</td>
+			<td>
+				<input type="text" name="fermentable" value="" class="form-control" size="15"> 
+			</td>
+							
+			<td class="text-right">
+				<div class="row">
+					<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
+				</div>
+			</td>
 		</tr>   
 		  </form>
 		</table>

@@ -11,7 +11,7 @@ from flask import Flask, flash, redirect, render_template, request, url_for, Res
 import json
 import pandas as pd
 import matplotlib.pyplot as plt 
-from bson.objectid import ObjectId
+from bson.objectid import ObjectId 
 
 conn = pymongo.MongoClient('mongodb://127.0.0.1', 27017)
 db = conn.brewpiless
@@ -605,32 +605,91 @@ def recipes():
     recipename = form.recipename.data
     recipestyle = form.recipestyle.data
     recipemethod = form.recipemethod.data
-    ret = ''   
-    grainlist = []
+    ret = []   
     
+    dic = {}
+    gra = {}
+    hop = {}
+    yeast = {}
+    temp = ''
+    #collection = MongoCollection("brewpiless","recipes",["recipes", "collection_select_key_2"], {filter_key : filter_value})
+     
     if form.validate_on_submit():     
         
         if recipename == '' and recipestyle == '' and recipemethod == '':
             #busca tudo  
-            ret = crecipes.find({}, {'_id': 0, 'Name': 1, 'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1})              
-            for g in ret:
-                print(g['Grains'])   
-                for x in g['Grains'] :
-                    print(x)
-                    r = cgrains.find_one(x, {'_id':0, 'Grain':1})
-                    print(r)
-                    print(type(r))
-                    for nameg in r.values():
+             
+            cursor = crecipes.find({}, {'_id': 0, 'Name': 1, 'Style':1, 'Method':1,'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1})              
+            for row in cursor:                 
+                print(row)  
+                dic['Name'] = row['Name']
+                dic['Style'] = row['Style'] 
+                dic['Method'] = row['Method'] 
+                
+                for field in row['Grains']:
+                    i=0
+                    for idg in field.values():                        
+                        r = cgrains.find_one(idg, {'_id':0, 'Grain':1}) 
+                        i = i +1
+                        for name in r.values():                             
+                            if temp == '':                                
+                                temp = str(i)+' - '+name
+                                gra['Grain'] = temp                                    
+                            else:                                
+                                temp = temp+'    '+str(i+1)+' - '+name
+                                gra['Grain'] = temp
+                    
+                temp = '' 
+                
+                for field in row['Hops']:
+                    i=0
+                    for idh in field.values():
                         
-                        print(nameg)
-                        grainlist.append(nameg)
+                        r = chops.find_one(idh, {'_id':0, 'Hop':1, 'Type': 1}) 
+                        i = i +1
+                        for name in r.values(): 
+                            print(name)
+                            if temp == '':  
+                                temp = str(i)+' - '+name
+                                hop['Hops'] = temp                        
+                            else:
+                                temp = temp+'   '+str(i+1)+' - '+name
+                                hop['Hops'] = temp                        
                         
-            print(grainlist)
+                temp = ''                 
+                    
+                for field in row['Yeasts']:
+                    i=0
+                    for idy in field.values():
+                        r = cyeasts.find_one(idy, {'_id':0, 'Name':1}) 
+                        i = i +1
+                        for name in r.values(): 
+                            if temp == '':
+                                temp = str(i)+' - '+name
+                                yeast['Yeasts'] = temp
+                            else:
+                                temp = temp+'   '+str(i+1)+' - '+name
+                                yeast['Yeasts'] = temp                        
+                    
+                temp = ''   
+                
+                #gra.update(hop) 
+                #dic.update(gra)
+                
+                dic = {**dic, **gra, **hop, **yeast} 
+                dic['Fermentables'] = row['Fermentables']
+                
+                copy = dic.copy()
+                ret.append(copy)
+                    
+                
+                
+            print(ret)    
         elif recipename != '':
             #busca NAME        
             print('elif')           
             ret =  crecipes.find({"Name": recipename}, {'_id': 0, 'Name': 1, 'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1})               
-
+            
             print(type(ret))
             print(ret)
         else:
@@ -674,6 +733,8 @@ def recipesrecord():
      
     if request.method == 'POST':
         name = form.name.data
+        style = form.style.data
+        method = form.method.data
         selgrains = request.form.getlist('grains')
         selhops = request.form.getlist('hop')
         selyeast = request.form.getlist('yeast')
@@ -703,7 +764,7 @@ def recipesrecord():
             r = cyeasts.find_one({"Name": yeast}, {'_id':1})
             listyeast.append(r)
             
-        values = {"Name":name, "Grains": listgrain, "Hops": listhop, "Yeasts": listyeast, "Fermentables": fermentables }
+        values = {"Name":name, "Style": style, "Method": method ,"Grains": listgrain, "Hops": listhop, "Yeasts": listyeast, "Fermentables": fermentables }
         print(values)
         checkrecipe = crecipe.find_one({"Name": name})
         

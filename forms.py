@@ -23,6 +23,8 @@ class Recipe(FlaskForm):
 
 class CreateRecipe(FlaskForm): 
     name = StringField('name')
+    style = StringField('style')
+    method = StringField('method')
     grain = StringField('grains')
     hop = StringField('hop')  
     yeast = StringField('yeast')  
