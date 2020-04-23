@@ -7,7 +7,7 @@ import pymongo
 from flask_minify import minify
 from htmlmin.minify import html_minify
 from forms import CreateEditBeer, CreateEditHop, CreateEditGrain, CreateEditYeast,CreateRecipe, SearchBeer, Yeasts, Hops, Grains, Recipe
-from flask import Flask, flash, redirect, render_template, request, url_for, Response, jsonify
+from flask import Flask, flash, redirect, render_template, request, url_for, Response, jsonify, make_response
 import json
 import pandas as pd
 import matplotlib.pyplot as plt 
@@ -89,15 +89,15 @@ def index():
     externalvolt = request.args.get('ExternalVolt')
     tempmode = request.args.get('TempMode')
     modeinint = request.args.get('ModeInInt') 
-    print("Temperatura da Breja: {}".format(beertemp))
-    print("Temperatura do Fridge: {}".format(fridgetemp))
-    print("Config da Breja: {}".format(beerset))
-    print("Config do Fridge: {}".format(fridgeset))
-    print("Temperatura Ambiente: {}".format(temproom))
-    print("Temperatura Auxiliar: {}".format(tempaux))
-    print("Voltagem do Spindle: {}".format(externalvolt))
-    print("Escala de Temperatura: {}".format(tempmode))
-    print("Escala em Inteiro: {}".format(modeinint)) 
+    print("Beer Temperature: {}".format(beertemp))
+    print("Fridge Temperature: {}".format(fridgetemp))
+    print("Beer Config: {}".format(beerset))
+    print("Fridge Config: {}".format(fridgeset))
+    print("Environment Temp : {}".format(temproom))
+    print("Auxiliar Temp: {}".format(tempaux))
+    print("Spindle Voltage: {}".format(externalvolt))
+    print("Temperature Escale: {}".format(tempmode))
+    print("Escale (Integer): {}".format(modeinint)) 
 
     dataobj = BrewPiLess(beertemp, fridgetemp, beerset, fridgeset, temproom, tempaux, externalvolt, tempmode, modeinint)
     arquivo = dataobj.GravaArq()
@@ -158,8 +158,7 @@ def beerrecord():
         else:
             beerinserted = collection.insert_one(values)            
             flash("New beer included!")
-
-    
+ 
     elif beernameid:
         indb = collection.find_one({"beername": beernameid}, {'_id': 0})
         if indb:
@@ -185,17 +184,16 @@ def beersearch():
     ret = ''  
     if form.validate_on_submit():     
         if beername == '' and beerstyle == '':
-           #busca tudo  
+           #Search all  
            ret = list(collection.find({}, {'_id': 0})) 
  
         elif beername != '':
-           #busca NAME           
+           #Search by  NAME           
            ret2 = collection.find({"beername": beername})
            if ret2:
-               ret = list(ret2)
- 
+               ret = list(ret2) 
         else:
-        #busca Style
+        #Search by  Style
            ret = list(collection.find({"beerstyle": beerstyle}))
                    
     conn.close()  
@@ -231,65 +229,102 @@ def beersearch():
 
 
 
-@app.route('/analyticsOLD', methods=["GET", 'POST']) # Analytics
-def analyticsOLD():             
-
-    beer = 'beertest'  
-    collection = db.brewpiless    
-    
-    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
-
-    df['created'] = pd.to_datetime(df['created'])
-    df['beertemp'] = df['beertemp'].astype('float') 
-    df['fridgetemp'] = df['fridgetemp'].astype('float') 
-    df['beerset'] = df['beerset'].astype('float') 
-    df['fridgeset'] = df['fridgeset'].astype('float') 
-    df = df.sort_values('created', ascending=True) 
-    tam = df.count()
- 
-    label = df['created']
-    y1 =  df['beertemp']
-    y2 = df['fridgetemp']
-    y3 = df['beerset']
-    y4 = df['fridgeset']   
-    
-    plt.style.use('seaborn-whitegrid')    
-    fig, ax = plt.subplots()
-    plt.rcParams["figure.figsize"] = [16,9]
-    plt.plot(label,y1, label='Beer Temp', linewidth=2)
-    plt.plot(label,y2, label='Fridge Temp', linewidth=2)
-    plt.plot(label,y3, label='Beer Set', linewidth=2)
-    plt.plot(label,y4, label='Fridge Set', linewidth=2)
-    
-    plt.title(beer, fontsize=14, fontweight=0, color='blue')
-    # Add legend
-    plt.legend(loc=4, ncol=1,fontsize='small')
-
-
-    # set custom tick labels
-    ax.set_xticklabels(label, rotation=45, horizontalalignment='right')
-    
-    path = '/css/images/icons/'+beer+'.png'
-    print(path)
-    plt.savefig('C:/Users/bceolincamar/Documents/GitHub/homebrew/static/css/images/icons/'+beer+'.png')
-    
-    return render_template('Analytics.html', path = path) 
-
- 
-@app.route('/analytics', methods=["GET"]) # Analytics
-def data():             
-    
-    beer = 'beertest'  
-    collection = db.brewpiless     
-    result = list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1}))
-    
+#@app.route('/analyticsOLD', methods=["GET", 'POST']) # Analytics
+#def analyticsOLD():             
+#
+#    beer = 'beertest'  
+#    collection = db.brewpiless    
+#    
 #    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
+#
+#    df['created'] = pd.to_datetime(df['created'])
+#    df['beertemp'] = df['beertemp'].astype('float') 
+#    df['fridgetemp'] = df['fridgetemp'].astype('float') 
+#    df['beerset'] = df['beerset'].astype('float') 
+#    df['fridgeset'] = df['fridgeset'].astype('float') 
+#    df = df.sort_values('created', ascending=True) 
+#    tam = df.count()
+# 
+#    label = df['created']
+#    y1 =  df['beertemp']
+#    y2 = df['fridgetemp']
+#    y3 = df['beerset']
+#    y4 = df['fridgeset']   
+#    
+#    plt.style.use('seaborn-whitegrid')    
+#    fig, ax = plt.subplots()
+#    plt.rcParams["figure.figsize"] = [16,9]
+#    plt.plot(label,y1, label='Beer Temp', linewidth=2)
+#    plt.plot(label,y2, label='Fridge Temp', linewidth=2)
+#    plt.plot(label,y3, label='Beer Set', linewidth=2)
+#    plt.plot(label,y4, label='Fridge Set', linewidth=2)
+#    
+#    plt.title(beer, fontsize=14, fontweight=0, color='blue')
+#    # Add legend
+#    plt.legend(loc=4, ncol=1,fontsize='small')
+#
+#
+#    # set custom tick labels
+#    ax.set_xticklabels(label, rotation=45, horizontalalignment='right')
+#    
+#    path = '/css/images/icons/'+beer+'.png'
+#    print(path)
+#    plt.savefig('C:/Users/bceolincamar/Documents/GitHub/homebrew/static/css/images/icons/'+beer+'.png')
+#    
+#    return render_template('Analytics.html', path = path) 
 
-  
-    
-    return jsonify({'results': result['created','beertemp', 'fridgetemp', 'beerset', 'fridgeset':]})  
+#from random import sample
  
+#@app.route('/data', methods=["GET"]) # Analytics
+#def data():             
+#    ret = []
+#    beer = 'beertest'  
+#    collection = db.brewpiless     
+#    result = collection.find({'beername':beer}, {'_id':0, 'beertemp':1})
+#    for row in result:
+#        print(row)
+#        for f in row.values():
+#            print(f)
+#            ret.append(f)
+#    #print(result)
+##    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
+#
+#  #result['created','beertemp', 'fridgetemp', 'beerset', 'fridgeset']
+#    print(ret)
+#    return jsonify({'results': ret })  
 
+
+@app.route('/analytics') # Analytics
+def analytics():                   
+    return render_template('Analytics.html')
+
+@app.route('/data') # Analytics
+def data(): 
+    ret = []
+    ret2 =[]
+    beer = 'beertest'
+    collection = db.brewpiless     
+    result = collection.find({'beername':beer}, {'_id':0, 'beertemp':1, 'created':1})
+    
+    for row in result:
+        print('row')
+        print(row)         
+        print(type(row))
+        for y in row.values(): 
+            print(y)
+        for y in row.values(): 
+            print(y)
+        
+    print(ret)
+    print(ret2)
+#    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
+    conn.close()
+    return jsonify({'results': ret })  
+ 
+    
+    
+    
+#######check if still using
 @app.route('/chart-live-data')
 def chart_live_data():
     def getlivedata():
@@ -357,21 +392,19 @@ def hops():
     ret = ''  
     if form.validate_on_submit():    
         if Hop == '' and Type == '' and Origin == '' :
-           #busca tudo  
+           #Search all   
            ret = list(collection.find({}, {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                       
            print('if')
-        elif Hop != '':
-           #busca NAME        
+        elif Hop != '':       
            print('elif')           
            ret = collection.find({"Hop": Hop},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1})                    
            print(type(ret)) 
-        elif Type != '':
-           #busca NAME        
+        elif Type != '':      
            print('elif')           
            ret = list(collection.find({"Type": Type},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                     
            print(type(ret)) 
         else:
-        #busca Style
+        #Search by  Style
            print('else')        
            ret = list(collection.find({"Origin": Origin},  {'_id': 0, 'Hop': 1, 'Origin':1, 'Type':1, 'Alpha':1, 'Beta':1, 'Notes':1}))                     
                  
@@ -379,10 +412,8 @@ def hops():
     return render_template('hops.html', form=form, ret=ret)      
     
 @app.route('/hopsrecord', methods=["GET","POST"]) # Beer Cadastro 
-def hopsrecord():
- 
-    collection = db.hops    
-    
+def hopsrecord(): 
+    collection = db.hops        
     form = CreateEditHop()     
     hop = form.hop.data
     origin = form.origin.data
@@ -403,8 +434,7 @@ def hopsrecord():
     Notes = ''
     
     if form.validate():
-        verhop = collection.find_one({"Hop": hop})
-        
+        verhop = collection.find_one({"Hop": hop})        
         if verhop:
             flash("Hop details updated !")
             collection.update_one({"Hop": hop}, {'$set':{"Origin":origin, "Type":hoptype, "Alpha":alpha, "Beta":beta, "Notes":notes}}, upsert=False)
@@ -428,24 +458,22 @@ def hopsrecord():
    
 @app.route('/grainssearch', methods=["GET", 'POST']) # GRAINS
 def grains():       
-    collection = db.grains    
-    
-    form = Grains()      
-    
+    collection = db.grains        
+    form = Grains()          
     Grain = form.Grain.data 
     Origin = form.Origin.data        
     ret = ''  
     if form.validate_on_submit():    
         if Grain == '' and Origin == '' :
-           #busca tudo  
+           #Search by  tudo  
            ret = list(collection.find({}, {'_id': 0, 'Grain': 1, 'Origin':1, 'Mash':1, 'Color':1, 'Power':1, 'Potential':1, 'MaxPercent':1, 'Notes':1}))                     
  
         elif Grain != '':
-           #busca NAME            
+           #Search by  NAME            
            ret = collection.find({"Grain": Grain}, {'_id': 0, 'Grain': 1, 'Origin':1, 'Mash':1, 'Color':1, 'Power':1, 'Potential':1, 'MaxPercent':1, 'Notes':1})                    
     
         else:
-        #busca Style 
+        #Search by  Style 
            ret = list(collection.find({"Origin": Origin},  {'_id': 0,  'Grain': 1, 'Origin':1, 'Mash':1, 'Color':1, 'Power':1, 'Potential':1, 'MaxPercent':1, 'Notes':1}))                     
                        
     conn.close() 
@@ -453,8 +481,7 @@ def grains():
 
 @app.route('/grainsrecord', methods=["GET","POST"]) # Beer Cadastro 
 def grainsrecord():  
-    collection = db.grains    
-    
+    collection = db.grains     
     form = CreateEditGrain()     
     grain = form.grain.data
     origin = form.origin.data
@@ -463,8 +490,7 @@ def grainsrecord():
     power = form.power.data            
     potential = form.potential.data 
     maxp = form.maxp.data 
-    notes = form.notes.data 
-    
+    notes = form.notes.data     
     values = {"Grain": grain, "Origin":origin, "Mash":mash, "Color":color, "Power":power, "Potential":potential, "MaxPercent":maxp, "Notes":notes}
     
     grainnameid  = request.args.get('Grain')    
@@ -479,16 +505,13 @@ def grainsrecord():
     Notes = ''
     
     if form.validate():
-        verhop = collection.find_one({"Grain": grain})
-        
+        verhop = collection.find_one({"Grain": grain})        
         if verhop:
             flash("Grain details updated !")
             collection.update_one({"Grain": grain}, {'$set':{"Origin":origin, "Mash":mash, "Color":color, "Power":power, "Potential":potential, "MaxPercent":maxp, "Notes":notes}}, upsert=False)
-
         else:
             graininserted = collection.insert_one(values)            
-            flash("New Grain included!")
-    
+            flash("New Grain included!")    
     elif grainnameid:
         indb = collection.find_one({"Grain": grainnameid}, {'_id': 0})
         if indb:
@@ -499,8 +522,7 @@ def grainsrecord():
             Power = indb['Power'] 
             Potential = indb['Potential'] 
             MaxPercent = indb['MaxPercent'] 
-            Notes = indb['Notes']            
-    
+            Notes = indb['Notes']           
     conn.close()  
     return render_template('grainsrecord.html', form=form, Grain=Grain, Origin=Origin, Mash=Mash, Color=Color, Power=Power, Potential=Potential, MaxPercent=MaxPercent, Notes=Notes)
 
@@ -508,36 +530,25 @@ def grainsrecord():
 
 @app.route('/yeastssearch', methods=["GET", 'POST']) # YEAST
 def yeastssearch():       
-    collection = db.yeast    
-    
-    form = Yeasts()     
-    
+    collection = db.yeast        
+    form = Yeasts()        
     Yeast = form.Yeast.data
     Yeastlab = form.Yeastlab.data
     Yeasttype = form.Yeasttype.data   
     
     ret = ''  
     if form.validate_on_submit():     
-        print(form)
+        
         if Yeast == '' and Yeasttype == '':
-           #busca tudo  
+           #Search all
            ret = list(collection.find({}, {'_id': 0, 'Name': 1, 'Lab':1, 'Type':1, 'Form':1, 'Temp':1, 'Attenuation':1, 'Flocculation':1, 'Notes':1}))                     
-           print(ret)           
-           print('if')
         elif Yeast != '':
-           #busca NAME        
-           print('elif')           
+           #Search by YeastName        
            ret =  collection.find({"Name": Yeast}, {'_id': 0, 'Name': 1, 'Lab':1, 'Type':1, 'Form':1, 'Temp':1, 'Attenuation':1, 'Flocculation':1, 'Notes':1})               
-               
-           print(type(ret))
-           print(ret)
         else:
-        #busca Style
-           print('else')        
+        #Search by  Style
            ret = list(collection.find({"Type": Yeasttype}, {'_id': 0, 'Name': 1, 'Lab':1, 'Type':1, 'Form':1, 'Temp':1, 'Attenuation':1, 'Flocculation':1, 'Notes':1}))
-           print(ret)                       
     conn.close() 
-         
     return render_template('yeast.html', form=form, ret=ret)  
 
 @app.route('/yeastsrecord', methods=["GET","POST"]) # Beer Cadastro 
@@ -568,15 +579,12 @@ def yeastsrecord():
     
     if form.validate():
         veryeast = collection.find_one({"Name": name})
-        
         if veryeast:
             flash("Yeast details updated !")
             collection.update_one({"Name": name}, {'$set':{"Lab":lab, "Type":typey, "Temp":temp, "Attenuation":attenuation, "Flocculation":flocculation, "Notes":notes}}, upsert=False)
-
         else:
             yeastinserted = collection.insert_one(values)            
             flash("New Yeast included!")
-    
     elif yeastnameid:
         indb = collection.find_one({"Name": yeastnameid}, {'_id': 0})
         if indb:
@@ -588,7 +596,6 @@ def yeastsrecord():
             Attenuation = indb['Attenuation'] 
             Flocculation = indb['Flocculation'] 
             Notes = indb['Notes']            
-    
     conn.close()  
     return render_template('yeastrecord.html', form=form, Name=Name, Lab=Lab, Typey=Typey, Formato=Formato, Temp=Temp, Attenuation=Attenuation, Flocculation=Flocculation, Notes=Notes)
 
@@ -611,15 +618,13 @@ def recipes():
     gra = {}
     hop = {}
     yeast = {}
-    temp = ''
-    #collection = MongoCollection("brewpiless","recipes",["recipes", "collection_select_key_2"], {filter_key : filter_value})
+    temp = '' 
      
     if form.validate_on_submit():     
         
         if recipename == '' and recipestyle == '' and recipemethod == '':
-            #busca tudo  
-             
-            cursor = crecipes.find({}, {'_id': 0, 'Name': 1, 'Style':1, 'Method':1,'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1})              
+            #Search by  tudo               
+            cursor = crecipes.find({}, {'_id': 0, 'Name': 1, 'Style':1, 'Method':1,'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1, 'Instructions':1})              
             for row in cursor:                 
                 print(row)  
                 dic['Name'] = row['Name']
@@ -637,14 +642,11 @@ def recipes():
                                 gra['Grain'] = temp                                    
                             else:                                
                                 temp = temp+'    '+str(i+1)+' - '+name
-                                gra['Grain'] = temp
-                    
-                temp = '' 
-                
+                                gra['Grain'] = temp                   
+                temp = ''                 
                 for field in row['Hops']:
                     i=0
-                    for idh in field.values():
-                        
+                    for idh in field.values():                        
                         r = chops.find_one(idh, {'_id':0, 'Hop':1, 'Type': 1}) 
                         i = i +1
                         for name in r.values(): 
@@ -654,10 +656,8 @@ def recipes():
                                 hop['Hops'] = temp                        
                             else:
                                 temp = temp+'   '+str(i+1)+' - '+name
-                                hop['Hops'] = temp                        
-                        
-                temp = ''                 
-                    
+                                hop['Hops'] = temp                                                
+                temp = ''                                     
                 for field in row['Yeasts']:
                     i=0
                     for idy in field.values():
@@ -669,34 +669,127 @@ def recipes():
                                 yeast['Yeasts'] = temp
                             else:
                                 temp = temp+'   '+str(i+1)+' - '+name
-                                yeast['Yeasts'] = temp                        
-                    
-                temp = ''   
-                
-                #gra.update(hop) 
-                #dic.update(gra)
+                                yeast['Yeasts'] = temp                                            
+                temp = ''                   
                 
                 dic = {**dic, **gra, **hop, **yeast} 
-                dic['Fermentables'] = row['Fermentables']
+                dic['Fermentables'] = row['Fermentables'] 
+                dic['Instructions'] = row['Instructions']
                 
                 copy = dic.copy()
                 ret.append(copy)
-                    
-                
-                
             print(ret)    
         elif recipename != '':
-            #busca NAME        
+            #Search by  NAME        
             print('elif')           
-            ret =  crecipes.find({"Name": recipename}, {'_id': 0, 'Name': 1, 'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1})               
-            
-            print(type(ret))
-            print(ret)
-        else:
-            #busca Style
-            print('else')        
-            ret = list(crecipes.find({"Type": Yeasttype}, {'_id': 0, 'Name': 1, 'Lab':1, 'Type':1, 'Form':1, 'Temp':1, 'Attenuation':1, 'Flocculation':1, 'Notes':1}))
-            print(ret)                       
+            cursor =  crecipes.find_one({"Name": recipename}, {'_id': 0, 'Name': 1, 'Style':1, 'Method':1,'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1, 'Instructions':1})               
+            if cursor:        
+                dic['Name'] = cursor['Name']
+                dic['Style'] = cursor['Style'] 
+                dic['Method'] = cursor['Method'] 
+                for field in cursor['Grains']:
+                    i=0
+                    for idg in field.values():                        
+                        r = cgrains.find_one(idg, {'_id':0, 'Grain':1}) 
+                        i = i +1
+                        for name in r.values():                             
+                            if temp == '':                                
+                                temp = str(i)+' - '+name
+                                gra['Grain'] = temp                                    
+                            else:                                
+                                temp = temp+'    '+str(i+1)+' - '+name
+                                gra['Grain'] = temp                    
+                temp = ''                 
+                for field in cursor['Hops']:
+                    i=0
+                    for idh in field.values():                        
+                        r = chops.find_one(idh, {'_id':0, 'Hop':1, 'Type': 1}) 
+                        i = i +1
+                        for name in r.values(): 
+                            print(name)
+                            if temp == '':  
+                                temp = str(i)+' - '+name
+                                hop['Hops'] = temp                        
+                            else:
+                                temp = temp+'   '+str(i+1)+' - '+name
+                                hop['Hops'] = temp                                                
+                temp = ''                                     
+                for field in cursor['Yeasts']:
+                    i=0
+                    for idy in field.values():
+                        r = cyeasts.find_one(idy, {'_id':0, 'Name':1}) 
+                        i = i +1
+                        for name in r.values(): 
+                            if temp == '':
+                                temp = str(i)+' - '+name
+                                yeast['Yeasts'] = temp
+                            else:
+                                temp = temp+'   '+str(i+1)+' - '+name
+                                yeast['Yeasts'] = temp                                            
+                temp = ''                    
+                dic = {**dic, **gra, **hop, **yeast} 
+                dic['Fermentables'] = cursor['Fermentables']
+                dic['Instructions'] = cursor['Instructions']
+                
+                copy = dic.copy()
+                ret.append(copy)
+            else:
+                flash('Recipe not found')            
+        elif recipestyle != '': 
+            #Search by  Style
+            cursor =  crecipes.find_one({"Style": recipestyle}, {'_id': 0, 'Name': 1, 'Style':1, 'Method':1,'Grains':1, 'Hops':1, 'Yeasts':1, 'Fermentables':1, 'Instructions':1})               
+            if cursor:        
+                dic['Name'] = cursor['Name']
+                dic['Style'] = cursor['Style'] 
+                dic['Method'] = cursor['Method'] 
+                for field in cursor['Grains']:
+                    i=0
+                    for idg in field.values():                        
+                        r = cgrains.find_one(idg, {'_id':0, 'Grain':1}) 
+                        i = i +1
+                        for name in r.values():                             
+                            if temp == '':                                
+                                temp = str(i)+' - '+name
+                                gra['Grain'] = temp                                    
+                            else:                                
+                                temp = temp+'    '+str(i+1)+' - '+name
+                                gra['Grain'] = temp                    
+                temp = '' 
+                
+                for field in cursor['Hops']:
+                    i=0
+                    for idh in field.values():                        
+                        r = chops.find_one(idh, {'_id':0, 'Hop':1, 'Type': 1}) 
+                        i = i +1
+                        for name in r.values(): 
+                            print(name)
+                            if temp == '':  
+                                temp = str(i)+' - '+name
+                                hop['Hops'] = temp                        
+                            else:
+                                temp = temp+'   '+str(i+1)+' - '+name
+                                hop['Hops'] = temp                                                
+                temp = ''                                     
+                for field in cursor['Yeasts']:
+                    i=0
+                    for idy in field.values():
+                        r = cyeasts.find_one(idy, {'_id':0, 'Name':1}) 
+                        i = i +1
+                        for name in r.values(): 
+                            if temp == '':
+                                temp = str(i)+' - '+name
+                                yeast['Yeasts'] = temp
+                            else:
+                                temp = temp+'   '+str(i+1)+' - '+name
+                                yeast['Yeasts'] = temp                                            
+                temp = ''                    
+                dic = {**dic, **gra, **hop, **yeast} 
+                dic['Fermentables'] = cursor['Fermentables']
+                dic['Instructions'] = cursor['Instructions']
+                copy = dic.copy()
+                ret.append(copy)
+            else:
+                flash('Recipe not found')                            
     conn.close() 
          
     return render_template('recipes.html', form=form, ret=ret) 
@@ -712,21 +805,19 @@ def recipesrecord():
     cyeasts = db.yeast
     Glist = []
     Hlist = []
-    Ylist = []
+    Ylist = []    
     
     Grains = list(cgrains.find({}, {'_id': 0, 'Grain': 1}))
-    
     for doc in Grains:
         for v in doc.values():
             Glist.append(v) 
      
-    Hops = list(chops.find({}, {'_id': 0, 'Hop': 1}))
+    Hops = list(chops.find({}, {'_id': 0, 'Hop': 1, 'Type':1}))
     for doc in Hops:
         for v in doc.values():
-            Hlist.append(v) 
-     
+            Hlist.append(v)      
  
-    Yeasts = list(cyeasts.find({}, {'_id': 0, 'Name': 1}))
+    Yeasts = list(cyeasts.find({}, {'_id': 0, 'Name': 1, 'Type':1}))
     for doc in Yeasts:
         for v in doc.values():
             Ylist.append(v) 
@@ -739,33 +830,26 @@ def recipesrecord():
         selhops = request.form.getlist('hop')
         selyeast = request.form.getlist('yeast')
         fermentables = form.fermentable.data
-                        
-        print(selgrains)
-        print(selhops)        
-        print(selyeast) 
-        print(name)        
-        print(fermentables) 
+        instructions = form.instructions.data
+        
         listgrain = []
         listhop = []
         listyeast = []
         
         for grain in selgrains:
-            print("aqui "+grain)
             r = cgrains.find_one({"Grain": grain}, {'_id':1})
             listgrain.append(r)
             
         for hop in selhops:
-            print("aqui "+hop)
             r = chops.find_one({"Hop": hop}, {'_id':1})
             listhop.append(r)
             
         for yeast in selyeast:
-            print("aqui "+yeast)
             r = cyeasts.find_one({"Name": yeast}, {'_id':1})
             listyeast.append(r)
             
-        values = {"Name":name, "Style": style, "Method": method ,"Grains": listgrain, "Hops": listhop, "Yeasts": listyeast, "Fermentables": fermentables }
-        print(values)
+        values = {"Name":name, "Style": style, "Method": method ,"Grains": listgrain, "Hops": listhop, "Yeasts": listyeast, "Fermentables": fermentables, "Instructions": instructions }
+
         checkrecipe = crecipe.find_one({"Name": name})
         
         if checkrecipe:

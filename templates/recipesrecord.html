@@ -11,10 +11,7 @@
 	</div>
 	<div class="card-body" height="180" > 
 	 <table class="table">
-		<thead class=" text-primary"> 
-		
-		<link rel="stylesheet" href="css/bootstrap-table-expandable.css">
-		<script src="js/bootstrap-table-expandable.js"></script>
+		<thead class=" text-primary">  
 
 		<form method="post" action="/recipesrecord">{{ form.csrf_token }}  
 		<div class="input-group no-border">	   
@@ -26,6 +23,7 @@
 					<th>Hop</th>			
 					<th>Yeast</th>
 					<th>Fermentable</th>
+					<th>Instructions</th>
 		</tr>
 
 		<tr >
@@ -61,9 +59,11 @@
 				</select> 
 			</td>
 			<td>
-				<input type="text" name="fermentable" value="" class="form-control" size="15"> 
+				<input type="text" name="fermentable" value="" class="form-control" size="15" > 
 			</td>
-							
+			<td>
+				<input type="text" name="instructions" value="" class="form-control" height="500"> 
+			</td>							
 			<td class="text-right">
 				<div class="row">
 					<button type="submit" name="Save" class="btn btn-primary pull-right" >Save</button> 					
@@ -71,15 +71,7 @@
 			</td>
 			
 		</tr>
-		<tr>
-		  <td colspan="5"><h4>Additional information</h4>
-			<ul>
-			  <li><a href="#">USA on Wikipedia</a></li>
-			  <li><a href="#">National Atlas of the United States</a></li>
-			  <li><a href="#">Historical Documents</a></li>
-			</ul>
-		  </td>
-		</tr>		
+			
 		  </form>
 		</table>
     </div>

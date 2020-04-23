@@ -63,6 +63,10 @@
 {% if ret %}
 {% block middle %}
 <div class="table-responsive">
+		
+		<link rel="stylesheet" href="css/bootstrap-table-expandable.css">
+		<script src="js/bootstrap-table-expandable.js"></script>
+		
                     <table class="table">
                       <thead class=" text-primary">
                         <th>Name</th>
@@ -72,6 +76,7 @@
 						<th>Hops</th>
 						<th>Yeast</th>
 						<th>Fermentables</th>
+						<th>Instructions</th>
                       </thead>
                       <tbody> 
 						{% for row in ret %} 
@@ -85,7 +90,10 @@
 											<button type="submit" name="edit" class="btn btn-primary pull-right">Edit</button>
 									</form> 
 							</td> 
+						  </tr>	
+						  
 						{% endfor %}
+						
 							{% with messages = get_flashed_messages() %}
 										{% if messages %}
 										<ul class=flashes>

@@ -28,7 +28,8 @@ class CreateRecipe(FlaskForm):
     grain = StringField('grains')
     hop = StringField('hop')  
     yeast = StringField('yeast')  
-    fermentable = StringField('fermentable')      
+    fermentable = StringField('fermentable')  
+    instructions = StringField('instructions')
     Save = SubmitField('Save')
 
 
