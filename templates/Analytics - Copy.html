@@ -1,0 +1,48 @@
+
+{% extends "base.html" %}
+
+{% block top %} 
+
+   <head>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+	<script src="http://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+ 
+ </head>
+ 
+
+
+<body> 
+
+<div class="ct-chart ct-perfect-fourth"></div>
+
+<script>
+ var myChart;
+ 
+ var getData = $.get('/data');
+ getData.done(function(results) {
+	var data = {
+	labels: ['mon','tue','wed','x','y','z'],
+	
+	series:[
+	results.results
+	]
+	};
+	
+	var options = {
+	width:1600,
+	height:1200,
+	 showPoint: false,
+  // Disable line smoothing
+  lineSmooth: true
+	}
+	
+	myChart = new Chartist.Line('.ct-chart', data, options);
+	
+	});
+    </script>
+</body> 
+
+   
+{% endblock %}		 
+   

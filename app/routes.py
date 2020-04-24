@@ -294,33 +294,55 @@ def beersearch():
 #    return jsonify({'results': ret })  
 
 
-@app.route('/analytics') # Analytics
-def analytics():                   
-    return render_template('Analytics.html')
+#@app.route('/analytics') # Analytics
+#def analytics():                   
+#    return render_template('Analytics.html')
 
-@app.route('/data') # Analytics
-def data(): 
-    ret = []
-    ret2 =[]
-    beer = 'beertest'
-    collection = db.brewpiless     
-    result = collection.find({'beername':beer}, {'_id':0, 'beertemp':1, 'created':1})
-    
-    for row in result:
-        print('row')
-        print(row)         
-        print(type(row))
-        for y in row.values(): 
-            print(y)
-        for y in row.values(): 
-            print(y)
-        
-    print(ret)
-    print(ret2)
-#    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
-    conn.close()
-    return jsonify({'results': ret })  
+#@app.route('/data') # Analytics
+#def data(): 
+#    ret = []
+#    ret2 =[]
+#    beer = 'beertest'
+#    collection = db.brewpiless     
+#    result = collection.find({'beername':beer}, {'_id':0, 'beertemp':1, 'created':1})
+#    
+#    for row in result: 
+#        print(row)          
+#        for x, y in row.items(): 
+#            if x == 'created':            
+#                ret.append(y)
+#            else:
+#                ret2.append(y)             
+#        
+#        
+#    print(ret)
+#    print(ret2)
+##    df = pd.DataFrame(list(collection.find({'beername':beer}, {'_id':0,'beername': 1, 'created':1, 'beertemp':1, 'fridgetemp':1, 'beerset':1, 'fridgeset':1})))
+#    conn.close()
+#    return jsonify({'results': ret})  
  
+@app.route('/analytics')
+def chart():  
+    ret = []
+    ret2 = []
+    collection = db.brewpiless             
+    cursor = collection.find({}, {'_id':0, 'created': 1, 'beertemp':1}) 
+    if cursor:   
+        for row in cursor:  
+            print(row)            
+            for x, y in row.items(): 
+                if x == 'created':            
+                    ret.append(y)
+                else:
+                    ret2.append(y)   
+            
+        print(ret)
+        print(ret2)
+    else:
+        print("Cursor is empty")  
+        
+    conn.close()  
+    return  render_template('Analytics.html')
     
     
     
