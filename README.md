@@ -1,2 +1,2 @@
 # homebrew
-homebrew webapp
+homebrew beer webapp
