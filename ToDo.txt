@@ -1,2 +1,12 @@
 Add Colors table to grain
 Suggestion beer based in rate
+
+
+
+install python
+install mongodb
+
+pip install -r requirements.txt
+set FLASK_APP=log_collector.py
+set FLASK_DEBUG=1
+python -m flask run -h 0.0.0.0

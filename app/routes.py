@@ -28,7 +28,7 @@ class BrewPiLess():
         self.tempmode = str(tempmode)
         self.modeinint = str(modeinint) 
         #self.path = '/home/hadoop/repo/brewpiless'
-        self.path = 'C:/Users/bruno/Desktop/api'
+        self.path = 'C:/Users/bruno/Documents/GitHub/homebrew'
         
     def run_cmd(self, args_list):
         """

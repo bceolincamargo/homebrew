@@ -4,3 +4,6 @@ Flask-Minify
 pymongo
 django-htmlmin
 flask_googlecharts
+flask_pymongo
+pandas
+matplotlib
