@@ -17,7 +17,7 @@ Although it isn't as powerful as a RPI, it's a good solution to maximize the fun
 This webserver collects temperature data from an webserver running in WIFI chip and saves into a data lake (Hadoop and CentOS 7) running in 2 desktops in my home
 
 
-##Technologies in use
+## Technologies in use
 Hadoop
 MongoDB
 Python
@@ -25,7 +25,8 @@ Flask
 HTML
 CSS
 
-
+## infra
+![Diagram](/images/diagram.png)
 
 ## !!Special Note
 
