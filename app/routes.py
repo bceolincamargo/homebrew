@@ -27,8 +27,8 @@ class BrewPiLess():
         self.externalvolt = str(externalvolt)
         self.tempmode = str(tempmode)
         self.modeinint = str(modeinint) 
-        #self.path = '/home/hadoop/repo/brewpiless'
-        self.path = 'C:/Users/bruno/Documents/GitHub/homebrew'
+        self.path = '/home/hadoop/repo/brewpiless'
+        #self.path = 'C:/Users/bruno/Documents/GitHub/homebrew'
         
     def run_cmd(self, args_list):
         """
@@ -44,7 +44,7 @@ class BrewPiLess():
         
         
     def GravaArq(self):
-        beername = 'beertest' #replace for input
+        beername = 'witbier' #replace for input
         created = time.strftime("%d/%m/%Y %H:%M:%S")   
         arqformat = time.strftime("%d%m%Y%H%M%S")
         filename = beername+str(arqformat)+'.json'
