@@ -18,10 +18,12 @@ This webserver collects temperature data from an webserver running in WIFI chip 
 
 
 ## Technologies in use
+CentOS
 Hadoop
 MongoDB
 Python
 Flask
+Graphana
 HTML
 CSS
 
